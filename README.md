@@ -60,3 +60,6 @@ Por ejemplo, si estás trabajando en el requisito "Navegación por fecha", el no
 7.  Una vez que el PR sea aprobado y las pruebas pasen, se podrá fusionar a `develop`.
 
 Este enfoque nos permitirá trabajar en paralelo en diferentes funcionalidades, mantener el código de la rama principal estable y facilitar la revisión de código.
+
+## TRELLO
+https://trello.com/invite/b/690507ef87756960e91279f3/ATTIb060e979fc4287c5890b3ed258c4a3647FE69931/master-trabajo-grupal
