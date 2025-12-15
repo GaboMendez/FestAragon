@@ -1,0 +1,151 @@
+{
+  "meta": {
+    "version": "1.0",
+    "timezone": "Europe/Madrid",
+    "ultimaActualizacion": "2025-08-01T10:00:00Z"
+  },
+
+  "pueblo": {
+    "nombre": "Nombre-Pueblo",
+    "provincia": "Zaragoza",
+    "comunidad": "Aragón",
+    "coordenadas": {
+      "lat": 42.1412,
+      "lng": -0.4087
+    },
+    "fechasFiestas": {
+      "inicio": "2025-08-10",
+      "fin": "2025-08-17"
+    }
+  },
+
+  "categorias": [
+    {
+      "id": "musica",
+      "nombre": "Música",
+      "icono": "ic_music"
+    },
+    {
+      "id": "cultural",
+      "nombre": "Cultural",
+      "icono": "ic_culture"
+    },
+    {
+      "id": "infantil",
+      "nombre": "Infantil",
+      "icono": "ic_children"
+    },
+    {
+      "id": "tradicional",
+      "nombre": "Tradicional",
+      "icono": "ic_traditional"
+    }
+  ],
+
+  "organizadores": [
+    {
+      "id": "ayuntamiento",
+      "nombre": "Ayuntamiento de PUEBLO",
+      "contacto": "info@pueblo.es"
+    },
+    {
+      "id": "comision_fiestas",
+      "nombre": "Comisión de Fiestas",
+      "contacto": "fiestas@pueblo.es"
+    }
+  ],
+
+  "eventos": [
+    {
+      "id": "evt_001",
+      "titulo": "Pregón de Fiestas",
+      "descripcion": "Inicio oficial de las fiestas desde el balcón del ayuntamiento.",
+      "categoriaId": "tradicional",
+      "organizadorId": "ayuntamiento",
+      "inicio": "2025-08-10T19:00:00",
+      "fin": "2025-08-10T20:00:00",
+      "lugar": {
+        "nombre": "Plaza del Ayuntamiento",
+        "direccion": "Plaza Mayor, 1",
+        "coordenadas": {
+          "lat": 42.1415,
+          "lng": -0.4091
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "pregon.jpg"
+      },
+      "tags": ["inicio", "fiestas", "tradicional"],
+    },
+
+    {
+      "id": "evt_002",
+      "titulo": "Concierto Joven",
+      "descripcion": "Actuación de grupos locales y DJ hasta la madrugada.",
+      "categoriaId": "musica",
+      "organizadorId": "comision_fiestas",
+      "inicio": "2025-08-11T23:00:00",
+      "fin": "2025-08-12T03:00:00",
+      "lugar": {
+        "nombre": "Recinto Ferial",
+        "direccion": "Calle 4",
+        "coordenadas": {
+          "lat": 42.1408,
+          "lng": -0.4079
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "concierto_joven.jpg"
+      },
+      "tags": ["musica", "noche", "dj"],
+    },
+
+    {
+      "id": "evt_003",
+      "titulo": "Parque Infantil",
+      "descripcion": "Atracciones y juegos para los más pequeños durante toda la tarde.",
+      "categoriaId": "infantil",
+      "organizadorId": "comision_fiestas",
+      "inicio": "2025-08-13T17:00:00",
+      "fin": "2025-08-13T21:00:00",
+      "lugar": {
+        "nombre": "Polideportivo Municipal",
+        "direccion": "Calle 5",
+        "coordenadas": {
+          "lat": 42.1420,
+          "lng": -0.4100
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "parque_infantil.jpg"
+      },
+      "tags": ["niños", "familia", "juegos"],
+    },
+
+    {
+      "id": "evt_004",
+      "titulo": "Mercado Artesano",
+      "descripcion": "Puestos de productos locales y artesanía tradicional.",
+      "categoriaId": "cultural",
+      "organizadorId": "ayuntamiento",
+      "inicio": "2025-08-15T10:00:00",
+      "fin": "2025-08-15T14:00:00",
+      "lugar": {
+        "nombre": "Plaza Mayor",
+        "direccion": "Plaza Mayor s/n",
+        "coordenadas": {
+          "lat": 42.1412,
+          "lng": -0.4087
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "mercado_artesano.jpg"
+      },
+      "tags": ["mercado", "artesania", "tradicional"],
+    }
+  ]
+}
