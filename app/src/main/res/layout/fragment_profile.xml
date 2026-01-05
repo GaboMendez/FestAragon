@@ -9,22 +9,6 @@
     tools:context=".ui.ProfileFragment">
 
     <!-- Header (Title only) -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mi Perfil"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- User Profile Section (Fixed) -->
     <LinearLayout
@@ -59,6 +43,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/header_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="María García"
@@ -66,6 +51,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/header_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="maria.garcia@email.com"
@@ -115,12 +101,6 @@
                             android:text="Información Personal"
                             android:textStyle="bold"
                             android:textSize="16sp"/>
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_alignParentEnd="true"
-                            android:src="@android:drawable/ic_menu_edit"
-                            app:tint="@android:color/darker_gray" />
                     </RelativeLayout>
 
                     <!-- Nombre completo -->
@@ -150,16 +130,18 @@
                                 android:text="Nombre completo"
                                 android:textSize="14sp" />
                             <TextView
+                                android:id="@+id/value_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="María García López"
                                 android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
                         </LinearLayout>
+
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_media_play"
+                            android:src="@android:drawable/ic_menu_edit"
                             app:tint="@android:color/darker_gray" />
                     </LinearLayout>
 
@@ -190,16 +172,18 @@
                                 android:text="Email"
                                 android:textSize="14sp" />
                             <TextView
+                                android:id="@+id/value_email"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="maria.garcia@email.com"
                                 android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
                         </LinearLayout>
+
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_media_play"
+                            android:src="@android:drawable/ic_menu_edit"
                             app:tint="@android:color/darker_gray" />
                     </LinearLayout>
 
@@ -230,16 +214,18 @@
                                 android:text="Teléfono"
                                 android:textSize="14sp" />
                             <TextView
+                                android:id="@+id/value_phone"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="+34 612 345 678"
                                 android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
                         </LinearLayout>
+
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_media_play"
+                            android:src="@android:drawable/ic_menu_edit"
                             app:tint="@android:color/darker_gray" />
                     </LinearLayout>
 
@@ -270,16 +256,18 @@
                                 android:text="Ubicación"
                                 android:textSize="14sp" />
                             <TextView
+                                android:id="@+id/value_location"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Aragón, España"
                                 android:textColor="@android:color/darker_gray"
                                 android:textSize="12sp" />
                         </LinearLayout>
+
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_media_play"
+                            android:src="@android:drawable/ic_menu_edit"
                             app:tint="@android:color/darker_gray" />
                     </LinearLayout>
 

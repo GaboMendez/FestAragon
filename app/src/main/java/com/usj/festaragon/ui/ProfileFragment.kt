@@ -2,7 +2,9 @@ package com.usj.festaragon.ui
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -11,7 +13,9 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -24,10 +28,24 @@ class ProfileFragment : Fragment() {
 
     private lateinit var profileImage: ImageView
     private lateinit var locationSwitch: SwitchMaterial
+    private lateinit var sharedPreferences: SharedPreferences
+
+    // Personal Info Views
+    private lateinit var tvName: TextView
+    private lateinit var tvEmail: TextView
+    private lateinit var tvPhone: TextView
+    private lateinit var tvLocation: TextView
+    private lateinit var headerName: TextView
+    private lateinit var headerEmail: TextView
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
         private const val TAKE_PHOTO_REQUEST = 2
+        private const val PREFS_NAME = "UserProfilePrefs"
+        private const val KEY_NAME = "user_name"
+        private const val KEY_EMAIL = "user_email"
+        private const val KEY_PHONE = "user_phone"
+        private const val KEY_LOCATION = "user_location"
     }
 
     private val requestPermissionLauncher = registerForActivityResult(
@@ -53,8 +71,27 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sharedPreferences = requireContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+        // Initialize Views
         profileImage = view.findViewById(R.id.profile_image)
         locationSwitch = view.findViewById(R.id.switch_location)
+        
+        tvName = view.findViewById(R.id.value_name)
+        tvEmail = view.findViewById(R.id.value_email)
+        tvPhone = view.findViewById(R.id.value_phone)
+        tvLocation = view.findViewById(R.id.value_location)
+        headerName = view.findViewById(R.id.header_name)
+        headerEmail = view.findViewById(R.id.header_email)
+
+        // Load Persisted Data
+        loadUserData()
+
+        // Set Click Listeners for Editing
+        view.findViewById<View>(R.id.row_name).setOnClickListener { showEditDialog("Nombre", KEY_NAME, tvName) }
+        view.findViewById<View>(R.id.row_email).setOnClickListener { showEditDialog("Email", KEY_EMAIL, tvEmail) }
+        view.findViewById<View>(R.id.row_phone).setOnClickListener { showEditDialog("Teléfono", KEY_PHONE, tvPhone) }
+        view.findViewById<View>(R.id.row_location).setOnClickListener { showEditDialog("Ubicación", KEY_LOCATION, tvLocation) }
 
         profileImage.setOnClickListener {
             showImagePickerOptions()
@@ -65,8 +102,6 @@ class ProfileFragment : Fragment() {
         }
 
         val locationRow = view.findViewById<View>(R.id.row_location_permission)
-        
-        // Handle clicking the entire row
         locationRow.setOnClickListener {
             if (!locationSwitch.isChecked) {
                 checkAndRequestLocationPermission()
@@ -75,9 +110,7 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        // Handle clicking the switch directly
         locationSwitch.setOnClickListener {
-            // Note: By the time onClick triggers, the switch has already toggled its state
             if (locationSwitch.isChecked) {
                 checkAndRequestLocationPermission()
             } else {
@@ -88,9 +121,45 @@ class ProfileFragment : Fragment() {
         updateLocationSwitchState()
     }
 
+    private fun loadUserData() {
+        val name = sharedPreferences.getString(KEY_NAME, "María García López")
+        val email = sharedPreferences.getString(KEY_EMAIL, "maria.garcia@email.com")
+        val phone = sharedPreferences.getString(KEY_PHONE, "+34 612 345 678")
+        val location = sharedPreferences.getString(KEY_LOCATION, "Aragón, España")
+
+        tvName.text = name
+        tvEmail.text = email
+        tvPhone.text = phone
+        tvLocation.text = location
+        
+        // Header usually shows first name or shortened version
+        headerName.text = name?.split(" ")?.get(0) ?: "María"
+        headerEmail.text = email
+    }
+
+    private fun showEditDialog(title: String, key: String, textView: TextView) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Editar $title")
+
+        val input = EditText(requireContext())
+        input.setText(textView.text)
+        builder.setView(input)
+
+        builder.setPositiveButton("Guardar") { _, _ ->
+            val newValue = input.text.toString()
+            sharedPreferences.edit().putString(key, newValue).apply()
+            textView.text = newValue
+            
+            // Sync header if name or email changed
+            if (key == KEY_NAME) headerName.text = newValue.split(" ")[0]
+            if (key == KEY_EMAIL) headerEmail.text = newValue
+        }
+        builder.setNegativeButton("Cancelar", null)
+        builder.show()
+    }
+
     override fun onResume() {
         super.onResume()
-        // Refresh state in case they changed permissions in Settings
         updateLocationSwitchState()
     }
 
@@ -123,7 +192,7 @@ class ProfileFragment : Fragment() {
                 startActivity(intent)
             }
             .setNegativeButton("Cancelar") { _, _ ->
-                updateLocationSwitchState() // Restore the toggle to ON
+                updateLocationSwitchState()
             }
             .show()
     }
