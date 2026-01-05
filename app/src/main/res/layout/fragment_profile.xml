@@ -8,41 +8,20 @@
     android:orientation="vertical"
     tools:context=".ui.ProfileFragment">
 
-    <!-- Header -->
+    <!-- Header (Title only) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:padding="16dp">
 
-        <ImageView
-            android:id="@+id/back_arrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:text="Mi Perfil"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/back_arrow"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/settings_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/settings_background"
-            android:padding="8dp"
-            android:src="@drawable/ic_settings"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -70,7 +49,6 @@
                 android:src="@drawable/ic_profile_placeholder"
                 app:civ_border_color="#FFF"
                 app:civ_border_width="2dp" />
-            <!-- Camera icon overlay would go here if available -->
         </FrameLayout>
 
         <LinearLayout
@@ -182,7 +160,6 @@
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@android:drawable/ic_media_play"
-                            android:rotation="0"
                             app:tint="@android:color/darker_gray" />
                     </LinearLayout>
 
@@ -581,10 +558,14 @@
                         android:textSize="16sp"/>
 
                     <LinearLayout
+                        android:id="@+id/row_location_permission"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:paddingVertical="8dp">
+                        android:paddingVertical="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
@@ -608,9 +589,9 @@
                                 android:textSize="12sp" />
                         </LinearLayout>
                         <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_location"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
+                            android:layout_height="wrap_content" />
                     </LinearLayout>
 
                     <LinearLayout

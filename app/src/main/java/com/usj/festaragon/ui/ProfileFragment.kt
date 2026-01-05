@@ -1,32 +1,52 @@
 package com.usj.festaragon.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.usj.festaragon.R
 
 class ProfileFragment : Fragment() {
 
     private lateinit var profileImage: ImageView
+    private lateinit var locationSwitch: SwitchMaterial
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
         private const val TAKE_PHOTO_REQUEST = 2
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val granted = permissions.entries.all { it.value }
+        if (granted) {
+            locationSwitch.isChecked = true
+            Toast.makeText(requireContext(), "Permiso de ubicación concedido", Toast.LENGTH_SHORT).show()
+        } else {
+            locationSwitch.isChecked = false
+            Toast.makeText(requireContext(), "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
@@ -34,6 +54,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         profileImage = view.findViewById(R.id.profile_image)
+        locationSwitch = view.findViewById(R.id.switch_location)
 
         profileImage.setOnClickListener {
             showImagePickerOptions()
@@ -43,10 +64,68 @@ class ProfileFragment : Fragment() {
             showLogoutConfirmationDialog()
         }
 
-        view.findViewById<View>(R.id.back_arrow).setOnClickListener {
-            val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
-            bottomNav.selectedItemId = R.id.nav_home
+        val locationRow = view.findViewById<View>(R.id.row_location_permission)
+        
+        // Handle clicking the entire row
+        locationRow.setOnClickListener {
+            if (!locationSwitch.isChecked) {
+                checkAndRequestLocationPermission()
+            } else {
+                showRevokePermissionDialog()
+            }
         }
+
+        // Handle clicking the switch directly
+        locationSwitch.setOnClickListener {
+            // Note: By the time onClick triggers, the switch has already toggled its state
+            if (locationSwitch.isChecked) {
+                checkAndRequestLocationPermission()
+            } else {
+                showRevokePermissionDialog()
+            }
+        }
+        
+        updateLocationSwitchState()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh state in case they changed permissions in Settings
+        updateLocationSwitchState()
+    }
+
+    private fun updateLocationSwitchState() {
+        val fineLocation = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+        val coarseLocation = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+        locationSwitch.isChecked = fineLocation == PackageManager.PERMISSION_GRANTED || coarseLocation == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun checkAndRequestLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissionLauncher.launch(arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ))
+        } else {
+            locationSwitch.isChecked = true
+            Toast.makeText(requireContext(), "El permiso ya ha sido concedido", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showRevokePermissionDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Revocar permisos")
+            .setMessage("Para desactivar completamente el acceso a la ubicación, debes hacerlo desde los ajustes de la aplicación.")
+            .setPositiveButton("Ir a Ajustes") { _, _ ->
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", requireContext().packageName, null)
+                intent.data = uri
+                startActivity(intent)
+            }
+            .setNegativeButton("Cancelar") { _, _ ->
+                updateLocationSwitchState() // Restore the toggle to ON
+            }
+            .show()
     }
 
     private fun showImagePickerOptions() {
