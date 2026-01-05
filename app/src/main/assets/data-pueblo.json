@@ -76,7 +76,7 @@
         "tipo": "imagen",
         "recurso": "pregon.jpg"
       },
-      "tags": ["inicio", "fiestas", "tradicional"],
+      "tags": ["inicio", "fiestas", "tradicional"]
     },
 
     {
@@ -99,7 +99,7 @@
         "tipo": "imagen",
         "recurso": "concierto_joven.jpg"
       },
-      "tags": ["musica", "noche", "dj"],
+      "tags": ["musica", "noche", "dj"]
     },
 
     {
@@ -122,7 +122,7 @@
         "tipo": "imagen",
         "recurso": "parque_infantil.jpg"
       },
-      "tags": ["niños", "familia", "juegos"],
+      "tags": ["niños", "familia", "juegos"]
     },
 
     {
@@ -145,7 +145,7 @@
         "tipo": "imagen",
         "recurso": "mercado_artesano.jpg"
       },
-      "tags": ["mercado", "artesania", "tradicional"],
+      "tags": ["mercado", "artesania", "tradicional"]
     }
   ]
 }
