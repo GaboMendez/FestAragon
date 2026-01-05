@@ -78,7 +78,6 @@
       },
       "tags": ["inicio", "fiestas", "tradicional"]
     },
-
     {
       "id": "evt_002",
       "titulo": "Concierto Joven",
@@ -101,7 +100,6 @@
       },
       "tags": ["musica", "noche", "dj"]
     },
-
     {
       "id": "evt_003",
       "titulo": "Parque Infantil",
@@ -124,7 +122,6 @@
       },
       "tags": ["niños", "familia", "juegos"]
     },
-
     {
       "id": "evt_004",
       "titulo": "Mercado Artesano",
@@ -146,6 +143,94 @@
         "recurso": "mercado_artesano.jpg"
       },
       "tags": ["mercado", "artesania", "tradicional"]
+    },
+    {
+      "id": "evt_005",
+      "titulo": "Jotas a la fresca",
+      "descripcion": "Canta y baila jotas aragonesas.",
+      "categoriaId": "tradicional",
+      "organizadorId": "ayuntamiento",
+      "inicio": "2025-08-12T20:00:00",
+      "fin": "2025-08-12T22:00:00",
+      "lugar": {
+        "nombre": "Plaza Mayor",
+        "direccion": "Plaza Mayor s/n",
+        "coordenadas": {
+          "lat": 42.1412,
+          "lng": -0.4087
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "jotas.jpg"
+      },
+      "tags": ["jotas", "folklore", "tradicional"]
+    },
+    {
+      "id": "evt_006",
+      "titulo": "Taller de manualidades para niños",
+      "descripcion": "Crea y diviértete con manualidades.",
+      "categoriaId": "infantil",
+      "organizadorId": "comision_fiestas",
+      "inicio": "2025-08-14T11:00:00",
+      "fin": "2025-08-14T13:00:00",
+      "lugar": {
+        "nombre": "Polideportivo Municipal",
+        "direccion": "Calle 5",
+        "coordenadas": {
+          "lat": 42.1420,
+          "lng": -0.4100
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "manualidades.jpg"
+      },
+      "tags": ["niños", "familia", "manualidades"]
+    },
+    {
+      "id": "evt_007",
+      "titulo": "Concierto de la banda municipal",
+      "descripcion": "Concierto de la banda de música del pueblo.",
+      "categoriaId": "musica",
+      "organizadorId": "ayuntamiento",
+      "inicio": "2025-08-16T20:00:00",
+      "fin": "2025-08-16T21:30:00",
+      "lugar": {
+        "nombre": "Plaza del Ayuntamiento",
+        "direccion": "Plaza Mayor, 1",
+        "coordenadas": {
+          "lat": 42.1415,
+          "lng": -0.4091
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "banda.jpg"
+      },
+      "tags": ["musica", "banda", "concierto"]
+    },
+    {
+      "id": "evt_008",
+      "titulo": "Traca fin de fiestas",
+      "descripcion": "Gran traca final para despedir las fiestas.",
+      "categoriaId": "tradicional",
+      "organizadorId": "comision_fiestas",
+      "inicio": "2025-08-17T00:00:00",
+      "fin": "2025-08-17T00:15:00",
+      "lugar": {
+        "nombre": "Recinto Ferial",
+        "direccion": "Calle 4",
+        "coordenadas": {
+          "lat": 42.1408,
+          "lng": -0.4079
+        }
+      },
+      "multimedia": {
+        "tipo": "imagen",
+        "recurso": "traca.jpg"
+      },
+      "tags": ["fin de fiestas", "fuegos artificiales"]
     }
   ]
 }
