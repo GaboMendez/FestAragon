@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.viewmodel.FavoritesViewModel
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class EventsAdapter(
     private val events: List<Event>,
@@ -24,7 +26,12 @@ class EventsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val event = events[position]
         holder.title.text = event.title
-        holder.time.text = "${event.startTime} - ${event.endTime}"
+
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+        val date = inputFormat.parse(event.date)
+        holder.time.text = "${outputFormat.format(date!!)}, ${event.startTime}"
+
         holder.location.text = event.location
         holder.favoriteToggle.isChecked = favoritesViewModel.isFavorite(event)
 
