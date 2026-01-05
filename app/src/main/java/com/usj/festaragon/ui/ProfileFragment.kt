@@ -37,7 +37,7 @@ class ProfileFragment : Fragment() {
     private lateinit var tvLocation: TextView
     private lateinit var headerName: TextView
     private lateinit var headerEmail: TextView
-
+    private lateinit var headerPhone: TextView
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
         private const val TAKE_PHOTO_REQUEST = 2
@@ -83,6 +83,7 @@ class ProfileFragment : Fragment() {
         tvLocation = view.findViewById(R.id.value_location)
         headerName = view.findViewById(R.id.header_name)
         headerEmail = view.findViewById(R.id.header_email)
+        headerPhone = view.findViewById(R.id.header_phone)
 
         // Load Persisted Data
         loadUserData()
@@ -95,10 +96,6 @@ class ProfileFragment : Fragment() {
 
         profileImage.setOnClickListener {
             showImagePickerOptions()
-        }
-
-        view.findViewById<View>(R.id.logout_button).setOnClickListener {
-            showLogoutConfirmationDialog()
         }
 
         val locationRow = view.findViewById<View>(R.id.row_location_permission)
@@ -135,6 +132,7 @@ class ProfileFragment : Fragment() {
         // Header usually shows first name or shortened version
         headerName.text = name?.split(" ")?.get(0) ?: "María"
         headerEmail.text = email
+        headerPhone.text = phone
     }
 
     private fun showEditDialog(title: String, key: String, textView: TextView) {
@@ -153,6 +151,7 @@ class ProfileFragment : Fragment() {
             // Sync header if name or email changed
             if (key == KEY_NAME) headerName.text = newValue.split(" ")[0]
             if (key == KEY_EMAIL) headerEmail.text = newValue
+            if (key == KEY_PHONE) headerPhone.text = newValue
         }
         builder.setNegativeButton("Cancelar", null)
         builder.show()

@@ -58,11 +58,12 @@
                 android:textColor="@android:color/darker_gray" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/header_phone"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Miembro desde Enero 2025"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp" />
+                android:text="+## ### ### ###"
+                android:textColor="@android:color/darker_gray" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -703,33 +704,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="#EEEEEE" />
-
-                    <LinearLayout
-                        android:id="@+id/logout_button"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:padding="16dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:background="?attr/selectableItemBackground">
-                        <ImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:src="@drawable/ic_logout"
-                            app:tint="@android:color/black" />
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="16dp"
-                            android:layout_weight="1"
-                            android:text="Cerrar sesión" />
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:src="@android:drawable/ic_media_play"
-                            app:tint="@android:color/darker_gray" />
-                    </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
