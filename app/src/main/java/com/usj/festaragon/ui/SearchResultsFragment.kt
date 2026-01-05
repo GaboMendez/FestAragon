@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -38,7 +40,18 @@ class SearchResultsFragment : Fragment() {
         val events = arguments?.getParcelableArrayList<Event>("searchResults")?.sortedBy { it.startTime }
         if (events != null) {
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = EventsAdapter(events, favoritesViewModel)
+            recyclerView.adapter = EventsAdapter(events, favoritesViewModel) { event ->
+                navigateToEventDetail(event)
+            }
+        }
+    }
+
+    private fun navigateToEventDetail(event: Event) {
+        parentFragmentManager.commit {
+            replace(R.id.fragment_container, EventDetailFragment().apply {
+                arguments = bundleOf("event" to event)
+            })
+            addToBackStack(null)
         }
     }
 }

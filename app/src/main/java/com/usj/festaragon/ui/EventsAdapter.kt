@@ -15,7 +15,8 @@ import java.util.Locale
 
 class EventsAdapter(
     private val events: List<Event>,
-    private val favoritesViewModel: FavoritesViewModel
+    private val favoritesViewModel: FavoritesViewModel,
+    private val onEventClick: (Event) -> Unit
 ) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,6 +42,10 @@ class EventsAdapter(
             } else {
                 favoritesViewModel.removeFavorite(event)
             }
+        }
+
+        holder.itemView.setOnClickListener {
+            onEventClick(event)
         }
 
         // Placeholder image

@@ -129,7 +129,9 @@ class HomeFragment : Fragment() {
         }
 
         todayEventsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        todayEventsRecyclerView.adapter = EventsAdapter(todayEvents, favoritesViewModel)
+        todayEventsRecyclerView.adapter = EventsAdapter(todayEvents, favoritesViewModel) { event ->
+            navigateToEventDetail(event)
+        }
 
         searchButton.setOnClickListener {
             val searchTerm = searchEditText.text.toString()
@@ -161,6 +163,15 @@ class HomeFragment : Fragment() {
         parentFragmentManager.commit {
             replace(R.id.fragment_container, SearchResultsFragment().apply {
                 arguments = bundleOf("searchResults" to ArrayList(results))
+            })
+            addToBackStack(null)
+        }
+    }
+
+    private fun navigateToEventDetail(event: Event) {
+        parentFragmentManager.commit {
+            replace(R.id.fragment_container, EventDetailFragment().apply {
+                arguments = bundleOf("event" to event)
             })
             addToBackStack(null)
         }
