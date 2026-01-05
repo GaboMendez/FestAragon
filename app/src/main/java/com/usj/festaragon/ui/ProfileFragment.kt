@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.usj.festaragon.R
 
 class ProfileFragment : Fragment() {
@@ -40,6 +41,11 @@ class ProfileFragment : Fragment() {
 
         view.findViewById<View>(R.id.logout_button).setOnClickListener {
             showLogoutConfirmationDialog()
+        }
+
+        view.findViewById<View>(R.id.back_arrow).setOnClickListener {
+            val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_navigation)
+            bottomNav.selectedItemId = R.id.nav_home
         }
     }
 
