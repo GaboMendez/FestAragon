@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
+import com.usj.festaragon.model.Multimedia
 import com.usj.festaragon.viewmodel.FavoritesViewModel
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -149,13 +150,41 @@ class HomeFragment : Fragment() {
     }
 
     private fun createEventFromJsonObject(jsonObject: JSONObject): Event {
+        val multimediaArray = jsonObject.optJSONArray("multimedia")
+        val multimediaList = mutableListOf<Multimedia>()
+        
+        if (multimediaArray != null) {
+            for (i in 0 until multimediaArray.length()) {
+                val mediaObj = multimediaArray.getJSONObject(i)
+                multimediaList.add(Multimedia(
+                    type = mediaObj.getString("tipo"),
+                    resource = mediaObj.getString("recurso")
+                ))
+            }
+        } else {
+            // Handle case where it's still a single object (backward compatibility or if only one is provided)
+            val multimediaObj = jsonObject.optJSONObject("multimedia")
+            if (multimediaObj != null) {
+                multimediaList.add(Multimedia(
+                    type = multimediaObj.getString("tipo"),
+                    resource = multimediaObj.getString("recurso")
+                ))
+            }
+        }
+        
+        val mainImageResource = multimediaList.find { it.type == "imagen" }?.resource
+        val imageName = mainImageResource?.substringBeforeLast(".")
+
         return Event(
             id = jsonObject.getString("id"),
             title = jsonObject.getString("titulo"),
             date = jsonObject.getString("inicio").substring(0, 10),
             startTime = jsonObject.getString("inicio").substring(11, 16),
             endTime = jsonObject.getString("fin").substring(11, 16),
-            location = jsonObject.getJSONObject("lugar").getString("nombre")
+            location = jsonObject.getJSONObject("lugar").getString("nombre"),
+            description = jsonObject.optString("descripcion"),
+            imageName = imageName,
+            multimedia = multimediaList
         )
     }
 

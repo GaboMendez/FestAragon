@@ -30,8 +30,12 @@ class EventsAdapter(
 
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
-        val date = inputFormat.parse(event.date)
-        holder.time.text = "${outputFormat.format(date!!)}, ${event.startTime}"
+        val date = try {
+            inputFormat.parse(event.date)
+        } catch (e: Exception) {
+            null
+        }
+        holder.time.text = if (date != null) "${outputFormat.format(date)}, ${event.startTime}" else event.startTime
 
         holder.location.text = event.location
         holder.favoriteToggle.isChecked = favoritesViewModel.isFavorite(event)
@@ -48,8 +52,17 @@ class EventsAdapter(
             onEventClick(event)
         }
 
-        // Placeholder image
-        holder.image.setImageResource(R.drawable.ic_launcher_background)
+        // Set image from data
+        event.imageName?.let { name ->
+            val resourceId = holder.itemView.context.resources.getIdentifier(name, "drawable", holder.itemView.context.packageName)
+            if (resourceId != 0) {
+                holder.image.setImageResource(resourceId)
+            } else {
+                holder.image.setImageResource(R.drawable.ic_launcher_background)
+            }
+        } ?: run {
+            holder.image.setImageResource(R.drawable.ic_launcher_background)
+        }
     }
 
     override fun getItemCount() = events.size
