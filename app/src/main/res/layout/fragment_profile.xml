@@ -26,7 +26,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- User Profile Section (Fixed) -->
+    <!-- User Profile Section -->
     <LinearLayout
         android:id="@+id/profile_header_section"
         android:layout_width="match_parent"
@@ -429,6 +429,7 @@
                         android:textSize="16sp"/>
 
                     <LinearLayout
+                        android:id="@+id/row_event_reminders"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -449,6 +450,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="Recordatorios de eventos" />
                             <TextView
+                                android:id="@+id/tv_event_reminders_subtitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="15 minutos antes"
@@ -456,9 +458,9 @@
                                 android:textSize="12sp" />
                         </LinearLayout>
                         <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_event_reminders"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checked="true" />
+                            android:layout_height="wrap_content" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -478,6 +480,7 @@
                             android:layout_weight="1"
                             android:text="Notificaciones por email" />
                         <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_email_notifications"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -499,6 +502,7 @@
                             android:layout_weight="1"
                             android:text="Notificaciones push" />
                         <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_push_notifications"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="true" />
@@ -511,10 +515,14 @@
                         android:layout_marginVertical="8dp"/>
 
                     <LinearLayout
+                        android:id="@+id/row_notice_time"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:paddingVertical="8dp">
+                        android:paddingVertical="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
@@ -527,6 +535,7 @@
                             android:layout_weight="1"
                             android:text="Tiempo de aviso" />
                         <TextView
+                            android:id="@+id/value_notice_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="15 min"

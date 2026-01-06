@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
@@ -24,6 +25,8 @@ class FavoritesFragment : Fragment() {
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
             favoritesViewModel.setNotificationsEnabled(true)
+        } else {
+            Toast.makeText(requireContext(), "Permiso de notificaciones denegado", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -41,22 +44,25 @@ class FavoritesFragment : Fragment() {
         val notificationsSwitch = view.findViewById<SwitchCompat>(R.id.notifications_switch)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        notificationsSwitch.isChecked = favoritesViewModel.areNotificationsEnabled()
+        // Observe the unified state
+        favoritesViewModel.notificationsEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            notificationsSwitch.isChecked = isEnabled
+        }
 
         favoritesViewModel.favoriteEvents.observe(viewLifecycleOwner) { events ->
             recyclerView.adapter = EventsAdapter(events, favoritesViewModel)
         }
 
-        notificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+        notificationsSwitch.setOnClickListener {
+            val isChecked = notificationsSwitch.isChecked
             if (isChecked) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    when {
-                        ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
-                            favoritesViewModel.setNotificationsEnabled(true)
-                        }
-                        else -> {
-                            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                        }
+                    if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                        favoritesViewModel.setNotificationsEnabled(true)
+                    } else {
+                        // Revert switch until permission is granted
+                        notificationsSwitch.isChecked = false
+                        requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     }
                 } else {
                     favoritesViewModel.setNotificationsEnabled(true)

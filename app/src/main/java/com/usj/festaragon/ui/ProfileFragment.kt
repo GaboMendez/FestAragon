@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
@@ -23,8 +24,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.usj.festaragon.R
+import com.usj.festaragon.viewmodel.FavoritesViewModel
 import java.io.File
 import java.io.FileOutputStream
 
@@ -33,7 +36,12 @@ class ProfileFragment : Fragment() {
     private lateinit var profileImage: ImageView
     private lateinit var locationSwitch: SwitchMaterial
     private lateinit var cameraSwitch: SwitchMaterial
+    private lateinit var eventRemindersSwitch: SwitchMaterial
+    private lateinit var emailNotificationsSwitch: SwitchMaterial
+    private lateinit var pushNotificationsSwitch: SwitchMaterial
     private lateinit var sharedPreferences: SharedPreferences
+    
+    private val favoritesViewModel: FavoritesViewModel by activityViewModels()
 
     // Personal Info Views
     private lateinit var tvName: TextView
@@ -43,6 +51,10 @@ class ProfileFragment : Fragment() {
     private lateinit var headerName: TextView
     private lateinit var headerEmail: TextView
     private lateinit var headerPhone: TextView
+    
+    // Notification Views
+    private lateinit var noticeTimeValue: TextView
+    private lateinit var eventRemindersSubtitle: TextView
 
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
@@ -53,6 +65,8 @@ class ProfileFragment : Fragment() {
         private const val KEY_PHONE = "user_phone"
         private const val KEY_LOCATION = "user_location"
         private const val KEY_IMAGE_PATH = "user_image_path"
+        private const val KEY_EMAIL_NOTIF = "email_notifications_enabled"
+        private const val KEY_PUSH_NOTIF = "push_notifications_enabled"
     }
 
     private val locationPermissionLauncher = registerForActivityResult(
@@ -71,6 +85,16 @@ class ProfileFragment : Fragment() {
         val msg = if (isGranted) "Permiso de cámara concedido" else "Permiso de cámara denegado"
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
+    
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            favoritesViewModel.setNotificationsEnabled(true)
+        } else {
+            Toast.makeText(requireContext(), "Permiso de notificaciones denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -88,6 +112,9 @@ class ProfileFragment : Fragment() {
         profileImage = view.findViewById(R.id.profile_image)
         locationSwitch = view.findViewById(R.id.switch_location)
         cameraSwitch = view.findViewById(R.id.switch_camera)
+        eventRemindersSwitch = view.findViewById(R.id.switch_event_reminders)
+        emailNotificationsSwitch = view.findViewById(R.id.switch_email_notifications)
+        pushNotificationsSwitch = view.findViewById(R.id.switch_push_notifications)
         
         tvName = view.findViewById(R.id.value_name)
         tvEmail = view.findViewById(R.id.value_email)
@@ -96,9 +123,23 @@ class ProfileFragment : Fragment() {
         headerName = view.findViewById(R.id.header_name)
         headerEmail = view.findViewById(R.id.header_email)
         headerPhone = view.findViewById(R.id.header_phone)
+        
+        noticeTimeValue = view.findViewById(R.id.value_notice_time)
+        eventRemindersSubtitle = view.findViewById(R.id.tv_event_reminders_subtitle)
 
         // Load Persisted Data
         loadUserData()
+
+        // Sync with unified LiveData from ViewModel
+        favoritesViewModel.notificationsEnabled.observe(viewLifecycleOwner) { isEnabled ->
+            eventRemindersSwitch.isChecked = isEnabled
+        }
+        
+        favoritesViewModel.noticeTimeMinutes.observe(viewLifecycleOwner) { minutes ->
+            val timeText = "$minutes min"
+            noticeTimeValue.text = timeText
+            eventRemindersSubtitle.text = "$timeText antes"
+        }
 
         // Personal Info Listeners
         view.findViewById<View>(R.id.row_name).setOnClickListener { showEditDialog("Nombre", KEY_NAME, tvName) }
@@ -126,6 +167,31 @@ class ProfileFragment : Fragment() {
         }
         cameraSwitch.setOnClickListener {
             if (cameraSwitch.isChecked) checkAndRequestCameraPermission() else showRevokePermissionDialog("cámara")
+        }
+        
+        // Event Reminders Switch Listener
+        eventRemindersSwitch.setOnClickListener {
+            val isChecked = eventRemindersSwitch.isChecked
+            if (isChecked) {
+                checkAndRequestNotificationPermission()
+            } else {
+                favoritesViewModel.setNotificationsEnabled(false)
+            }
+        }
+
+        // Email Notifications Switch Listener
+        emailNotificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean(KEY_EMAIL_NOTIF, isChecked).apply()
+        }
+
+        // Push Notifications Switch Listener
+        pushNotificationsSwitch.setOnCheckedChangeListener { _, isChecked ->
+            sharedPreferences.edit().putBoolean(KEY_PUSH_NOTIF, isChecked).apply()
+        }
+        
+        // Notice Time Listener
+        view.findViewById<View>(R.id.row_notice_time).setOnClickListener {
+            showNoticeTimeDialog()
         }
 
         view.findViewById<View>(R.id.logout_button).setOnClickListener {
@@ -164,6 +230,20 @@ class ProfileFragment : Fragment() {
             cameraSwitch.isChecked = true
         }
     }
+    
+    private fun checkAndRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                // Revert switch visually until permission is granted
+                eventRemindersSwitch.isChecked = false
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                favoritesViewModel.setNotificationsEnabled(true)
+            }
+        } else {
+            favoritesViewModel.setNotificationsEnabled(true)
+        }
+    }
 
     private fun showRevokePermissionDialog(type: String) {
         AlertDialog.Builder(requireContext())
@@ -187,11 +267,15 @@ class ProfileFragment : Fragment() {
         val phone = sharedPreferences.getString(KEY_PHONE, "+34 612 345 678")
         val location = sharedPreferences.getString(KEY_LOCATION, "Aragón, España")
         val imagePath = sharedPreferences.getString(KEY_IMAGE_PATH, null)
+        val emailNotif = sharedPreferences.getBoolean(KEY_EMAIL_NOTIF, false)
+        val pushNotif = sharedPreferences.getBoolean(KEY_PUSH_NOTIF, true)
 
         tvName.text = name
         tvEmail.text = email
         tvPhone.text = phone
         tvLocation.text = location
+        emailNotificationsSwitch.isChecked = emailNotif
+        pushNotificationsSwitch.isChecked = pushNotif
         
         headerName.text = name?.split(" ")?.get(0) ?: "María"
         headerEmail.text = email
@@ -221,6 +305,18 @@ class ProfileFragment : Fragment() {
             if (key == KEY_PHONE) headerPhone.text = newValue
         }
         builder.setNegativeButton("Cancelar", null)
+        builder.show()
+    }
+
+    private fun showNoticeTimeDialog() {
+        val options = arrayOf("5 min", "10 min", "15 min", "30 min", "60 min")
+        val minutes = arrayOf(5, 10, 15, 30, 60)
+        
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Seleccionar tiempo de aviso")
+        builder.setItems(options) { _, which ->
+            favoritesViewModel.setNoticeTime(minutes[which])
+        }
         builder.show()
     }
 
