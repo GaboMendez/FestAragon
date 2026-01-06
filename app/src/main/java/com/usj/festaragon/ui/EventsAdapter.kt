@@ -28,7 +28,7 @@ class EventsAdapter(
         holder.title.text = event.title
 
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
         val date = inputFormat.parse(event.date)
         holder.time.text = "${outputFormat.format(date!!)}, ${event.startTime}"
 
