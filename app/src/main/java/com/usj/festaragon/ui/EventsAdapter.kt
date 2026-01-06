@@ -1,11 +1,13 @@
 package com.usj.festaragon.ui
 
+import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
@@ -28,11 +30,25 @@ class EventsAdapter(
         holder.title.text = event.title
 
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
         val date = inputFormat.parse(event.date)
         holder.time.text = "${outputFormat.format(date!!)}, ${event.startTime}"
 
         holder.location.text = event.location
+
+        // Programmatically create and set the selector for the favorite toggle
+        val context = holder.itemView.context
+        val stateListDrawable = StateListDrawable()
+        stateListDrawable.addState(
+            intArrayOf(android.R.attr.state_checked),
+            ContextCompat.getDrawable(context, android.R.drawable.btn_star_big_on)
+        )
+        stateListDrawable.addState(
+            intArrayOf(),
+            ContextCompat.getDrawable(context, android.R.drawable.btn_star_big_off)
+        )
+        holder.favoriteToggle.background = stateListDrawable
+
         holder.favoriteToggle.isChecked = favoritesViewModel.isFavorite(event)
 
         holder.favoriteToggle.setOnClickListener {
