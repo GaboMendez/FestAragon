@@ -6,13 +6,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.FrameLayout
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.VideoView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -31,16 +26,15 @@ import com.usj.festaragon.viewmodel.FavoritesViewModel
 
 class EventDetailFragment : Fragment(), OnMapReadyCallback {
 
-    private var event: Event? = null
     private val eventDetailViewModel: EventDetailViewModel by activityViewModels()
     private val favoritesViewModel: FavoritesViewModel by activityViewModels()
     private var googleMap: GoogleMap? = null
-    private lateinit var btnFavorite: ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            event = it.getParcelable("event")
+            val event = it.getParcelable<Event>("event")
+            eventDetailViewModel.setEvent(event)
         }
     }
 
@@ -53,134 +47,86 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        setupViews(view)
+        setupMap()
+        observeViewModel()
+    }
 
-        val backButton = view.findViewById<ImageButton>(R.id.back_button)
-        btnFavorite = view.findViewById(R.id.btn_favorite_top)
-        val multimediaContainer = view.findViewById<LinearLayout>(R.id.multimedia_container)
-        val fullscreenOverlay = view.findViewById<FrameLayout>(R.id.fullscreen_overlay)
-        val fullscreenImage = view.findViewById<ImageView>(R.id.fullscreen_image)
-        val fullscreenVideo = view.findViewById<VideoView>(R.id.fullscreen_video)
-        val btnCloseFullscreen = view.findViewById<ImageButton>(R.id.btn_close_fullscreen)
-        val btnComoLlegar = view.findViewById<Button>(R.id.btn_como_llegar)
-        val btnVerMapa = view.findViewById<Button>(R.id.btn_ver_mapa)
-        val btnContactOrganizer = view.findViewById<Button>(R.id.btn_contact_organizer)
-        val btnShareEvent = view.findViewById<Button>(R.id.btn_share_event)
-        val btnAddCalendar = view.findViewById<Button>(R.id.btn_add_calendar)
-        val btnReminder = view.findViewById<Button>(R.id.btn_reminder)
-
-        backButton.setOnClickListener {
+    private fun setupViews(view: View) {
+        // Back button
+        view.findViewById<View>(R.id.back_button).setOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
-        // Set current event in ViewModel
-        event?.let { eventDetailViewModel.setEvent(it) }
-
-        // Setup Map
-        setupMap()
-
-        // Favorite button functionality
-        btnFavorite.setOnClickListener {
-            event?.let { currentEvent ->
-                if (favoritesViewModel.isFavorite(currentEvent)) {
-                    favoritesViewModel.removeFavorite(currentEvent)
-                    Toast.makeText(context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
-                } else {
-                    favoritesViewModel.addFavorite(currentEvent)
-                    Toast.makeText(context, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
-                }
-                updateFavoriteIcon()
-            }
+        // Favorite button
+        view.findViewById<View>(R.id.btn_favorite_top).setOnClickListener {
+            toggleFavorite()
         }
 
-        // Como llegar button - Open Google Maps with directions
-        btnComoLlegar.setOnClickListener {
-            openDirections()
+        // Action buttons
+        view.findViewById<View>(R.id.btn_como_llegar).setOnClickListener { openDirections() }
+        view.findViewById<View>(R.id.btn_ver_mapa).setOnClickListener { openMapLocation() }
+        view.findViewById<View>(R.id.btn_contact_organizer).setOnClickListener { sendEmailToOrganizer() }
+        view.findViewById<View>(R.id.btn_share_event).setOnClickListener { shareEvent() }
+        view.findViewById<View>(R.id.btn_add_calendar).setOnClickListener { addToCalendar() }
+        view.findViewById<View>(R.id.btn_reminder).setOnClickListener { setReminder() }
+
+        // Fullscreen overlay
+        val fullscreenOverlay = view.findViewById<View>(R.id.fullscreen_overlay)
+        view.findViewById<View>(R.id.btn_close_fullscreen).setOnClickListener {
+            closeFullscreen(view)
         }
-
-        // Ver en mapa button - Open location in map app
-        btnVerMapa.setOnClickListener {
-            openMapLocation()
-        }
-
-        // Contact organizer button - Send email
-        btnContactOrganizer.setOnClickListener {
-            sendEmailToOrganizer()
-        }
-
-        // Share event button
-        btnShareEvent.setOnClickListener {
-            shareEvent()
-        }
-
-        // Add to calendar button
-        btnAddCalendar.setOnClickListener {
-            addToCalendar()
-        }
-
-        // Set reminder button
-        btnReminder.setOnClickListener {
-            setReminder()
-        }
-
-        // Update favorite icon based on current state
-        updateFavoriteIcon()
-
-        event?.let { eventItem ->
-            view.findViewById<TextView>(R.id.event_detail_title).text = eventItem.title
-            view.findViewById<TextView>(R.id.event_detail_category).text = eventItem.categoryId
-            view.findViewById<TextView>(R.id.event_detail_date_full).text = eventItem.date
-            view.findViewById<TextView>(R.id.event_detail_time).text = "${eventItem.startTime} - ${eventItem.endTime}"
-            view.findViewById<TextView>(R.id.event_detail_location_name).text = eventItem.location
-            view.findViewById<TextView>(R.id.event_detail_description_text).text = eventItem.description
-            view.findViewById<TextView>(R.id.organizer_name).text = eventItem.organizerName
-            
-            val eventImage = view.findViewById<ImageView>(R.id.event_image_large)
-            // Load image using Glide from URL
-            if (eventItem.imageUrl.isNotEmpty()) {
-                Glide.with(this)
-                    .load(eventItem.imageUrl)
-                    .placeholder(R.drawable.ic_default_event_image)
-                    .error(R.drawable.ic_default_event_image)
-                    .centerCrop()
-                    .into(eventImage)
-            } else {
-                eventImage.setImageResource(R.drawable.ic_default_event_image)
-            }
-
-            // Multimedia Gallery
-            multimediaContainer.removeAllViews()
-            eventItem.multimedia.forEach { media ->
-                val itemView = ImageView(requireContext()).apply {
-                    layoutParams = LinearLayout.LayoutParams(300, 200).apply {
-                        setMargins(0, 0, 16, 0)
-                    }
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                    
-                    // Load multimedia images from URL
-                    Glide.with(this@EventDetailFragment)
-                        .load(media.resource)
-                        .placeholder(R.drawable.ic_default_event_image)
-                        .error(R.drawable.ic_default_event_image)
-                        .centerCrop()
-                        .into(this)
-
-                    setOnClickListener {
-                        showFullscreen(media.type, media.resource, fullscreenOverlay, fullscreenImage, fullscreenVideo)
-                    }
-                }
-                multimediaContainer.addView(itemView)
-            }
-        }
-
-        btnCloseFullscreen.setOnClickListener {
-            fullscreenOverlay.visibility = View.GONE
-            fullscreenVideo.stopPlayback()
-            fullscreenVideo.visibility = View.GONE
-            fullscreenImage.visibility = View.GONE
-        }
-        
         fullscreenOverlay.setOnClickListener {
-            btnCloseFullscreen.performClick()
+            closeFullscreen(view)
+        }
+    }
+
+    private fun observeViewModel() {
+        // Observe all event data through LiveData
+        eventDetailViewModel.eventTitle.observe(viewLifecycleOwner) { title ->
+            view?.findViewById<android.widget.TextView>(R.id.event_detail_title)?.text = title
+        }
+
+        eventDetailViewModel.eventCategory.observe(viewLifecycleOwner) { category ->
+            view?.findViewById<android.widget.TextView>(R.id.event_detail_category)?.text = category
+        }
+
+        eventDetailViewModel.eventDate.observe(viewLifecycleOwner) { date ->
+            view?.findViewById<android.widget.TextView>(R.id.event_detail_date_full)?.text = date
+        }
+
+        eventDetailViewModel.eventTimeRange.observe(viewLifecycleOwner) { timeRange ->
+            view?.findViewById<android.widget.TextView>(R.id.event_detail_time)?.text = timeRange
+        }
+
+        eventDetailViewModel.eventLocation.observe(viewLifecycleOwner) { location ->
+            view?.findViewById<android.widget.TextView>(R.id.event_detail_location_name)?.text = location
+        }
+
+        eventDetailViewModel.eventDescription.observe(viewLifecycleOwner) { description ->
+            view?.findViewById<android.widget.TextView>(R.id.event_detail_description_text)?.text = description
+        }
+
+        eventDetailViewModel.eventOrganizerName.observe(viewLifecycleOwner) { organizer ->
+            view?.findViewById<android.widget.TextView>(R.id.organizer_name)?.text = organizer
+        }
+
+        eventDetailViewModel.eventImageUrl.observe(viewLifecycleOwner) { imageUrl ->
+            loadMainImage(imageUrl)
+        }
+
+        eventDetailViewModel.eventMultimedia.observe(viewLifecycleOwner) { multimedia ->
+            setupMultimediaGallery(multimedia)
+        }
+
+        eventDetailViewModel.eventLatLng.observe(viewLifecycleOwner) { latLng ->
+            latLng?.let { updateMapLocation(it.first, it.second) }
+        }
+
+        // Observe current event for favorite state
+        eventDetailViewModel.currentEvent.observe(viewLifecycleOwner) { event ->
+            event?.let { updateFavoriteIcon(it) }
         }
     }
 
@@ -191,44 +137,110 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
-        event?.let { currentEvent ->
-            val eventLocation = LatLng(currentEvent.latitude, currentEvent.longitude)
-            googleMap?.apply {
-                addMarker(
-                    MarkerOptions()
-                        .position(eventLocation)
-                        .title(currentEvent.title)
-                )
-                moveCamera(CameraUpdateFactory.newLatLngZoom(eventLocation, 15f))
-                uiSettings.apply {
-                    isZoomControlsEnabled = false
-                    isScrollGesturesEnabled = false
-                    isZoomGesturesEnabled = false
-                    isTiltGesturesEnabled = false
-                    isRotateGesturesEnabled = false
-                }
-            }
+        configureMap()
+        
+        // Update map with current event location if available
+        eventDetailViewModel.eventLatLng.value?.let { (lat, lng) ->
+            updateMapLocation(lat, lng)
         }
     }
 
-    private fun updateFavoriteIcon() {
-        event?.let { currentEvent ->
-            val isFavorite = favoritesViewModel.isFavorite(currentEvent)
-            val iconRes = if (isFavorite) {
-                android.R.drawable.btn_star_big_on
-            } else {
-                android.R.drawable.btn_star
-            }
-            btnFavorite.setImageResource(iconRes)
-            
-            // Also update the tint to make it more visible
-            val tintColor = if (isFavorite) {
-                android.R.color.holo_orange_light
-            } else {
-                android.R.color.white
-            }
-            btnFavorite.setColorFilter(ContextCompat.getColor(requireContext(), tintColor))
+    private fun configureMap() {
+        googleMap?.uiSettings?.apply {
+            isZoomControlsEnabled = false
+            isScrollGesturesEnabled = false
+            isZoomGesturesEnabled = false
+            isTiltGesturesEnabled = false
+            isRotateGesturesEnabled = false
         }
+    }
+
+    private fun updateMapLocation(latitude: Double, longitude: Double) {
+        val eventLocation = LatLng(latitude, longitude)
+        val title = eventDetailViewModel.eventTitle.value ?: ""
+        
+        googleMap?.apply {
+            clear()
+            addMarker(
+                MarkerOptions()
+                    .position(eventLocation)
+                    .title(title)
+            )
+            moveCamera(CameraUpdateFactory.newLatLngZoom(eventLocation, 15f))
+        }
+    }
+
+    private fun loadMainImage(imageUrl: String) {
+        val eventImage = view?.findViewById<ImageView>(R.id.event_image_large) ?: return
+        
+        if (imageUrl.isNotEmpty()) {
+            Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.ic_default_event_image)
+                .error(R.drawable.ic_default_event_image)
+                .centerCrop()
+                .into(eventImage)
+        } else {
+            eventImage.setImageResource(R.drawable.ic_default_event_image)
+        }
+    }
+
+    private fun setupMultimediaGallery(multimedia: List<com.usj.festaragon.model.Multimedia>) {
+        val multimediaContainer = view?.findViewById<LinearLayout>(R.id.multimedia_container) ?: return
+        multimediaContainer.removeAllViews()
+        
+        multimedia.forEach { media ->
+            val itemView = ImageView(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(300, 200).apply {
+                    setMargins(0, 0, 16, 0)
+                }
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                
+                Glide.with(this@EventDetailFragment)
+                    .load(media.resource)
+                    .placeholder(R.drawable.ic_default_event_image)
+                    .error(R.drawable.ic_default_event_image)
+                    .centerCrop()
+                    .into(this)
+
+                setOnClickListener {
+                    showFullscreen(media.type, media.resource)
+                }
+            }
+            multimediaContainer.addView(itemView)
+        }
+    }
+
+    private fun toggleFavorite() {
+        eventDetailViewModel.currentEvent.value?.let { event ->
+            if (favoritesViewModel.isFavorite(event)) {
+                favoritesViewModel.removeFavorite(event)
+                Toast.makeText(context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
+            } else {
+                favoritesViewModel.addFavorite(event)
+                Toast.makeText(context, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
+            }
+            updateFavoriteIcon(event)
+        }
+    }
+
+    private fun updateFavoriteIcon(event: Event) {
+        val btnFavorite = view?.findViewById<android.widget.ImageButton>(R.id.btn_favorite_top) ?: return
+        val isFavorite = favoritesViewModel.isFavorite(event)
+        
+        val iconRes = if (isFavorite) {
+            android.R.drawable.btn_star_big_on
+        } else {
+            android.R.drawable.btn_star
+        }
+        btnFavorite.setImageResource(iconRes)
+        
+        val tintColor = if (isFavorite) {
+            android.R.color.holo_orange_light
+        } else {
+            android.R.color.white
+        }
+        btnFavorite.setColorFilter(ContextCompat.getColor(requireContext(), tintColor))
     }
 
     private fun shareEvent() {
@@ -237,23 +249,23 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
             action = Intent.ACTION_SEND
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, shareText)
-            putExtra(Intent.EXTRA_SUBJECT, event?.title ?: "Evento en FestAragón")
+            putExtra(Intent.EXTRA_SUBJECT, eventDetailViewModel.eventTitle.value ?: "Evento en FestAragón")
         }
         startActivity(Intent.createChooser(shareIntent, "Compartir evento"))
     }
 
     private fun openDirections() {
-        event?.let { currentEvent ->
-            val uri = Uri.parse(eventDetailViewModel.getDirectionsUrl())
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            intent.setPackage("com.google.android.apps.maps")
+        val uri = Uri.parse(eventDetailViewModel.getDirectionsUrl())
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        intent.setPackage("com.google.android.apps.maps")
 
-            if (intent.resolveActivity(requireActivity().packageManager) != null) {
-                startActivity(intent)
-            } else {
-                // Fallback to browser
+        if (intent.resolveActivity(requireActivity().packageManager) != null) {
+            startActivity(intent)
+        } else {
+            // Fallback to browser
+            eventDetailViewModel.eventLatLng.value?.let { (lat, lng) ->
                 val browserUri = Uri.parse(
-                    "https://www.google.com/maps/dir/?api=1&destination=${currentEvent.latitude},${currentEvent.longitude}"
+                    "https://www.google.com/maps/dir/?api=1&destination=$lat,$lng"
                 )
                 startActivity(Intent(Intent.ACTION_VIEW, browserUri))
             }
@@ -261,17 +273,15 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun openMapLocation() {
-        event?.let { currentEvent ->
-            val uri = Uri.parse(eventDetailViewModel.getMapUrl())
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(intent)
-        }
+        val uri = Uri.parse(eventDetailViewModel.getMapUrl())
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
     }
 
     private fun sendEmailToOrganizer() {
         val email = eventDetailViewModel.getOrganizerEmail()
-        val subject = "Consulta sobre: ${event?.title}"
-        val body = "Hola,\n\nMe gustaría obtener más información sobre el evento ${event?.title}.\n\nGracias."
+        val subject = eventDetailViewModel.getEmailSubject()
+        val body = eventDetailViewModel.getEmailBody()
 
         val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:")
@@ -288,36 +298,36 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addToCalendar() {
-        event?.let { currentEvent ->
-            // Parse date and time - assuming format "DD/MM/YYYY" and "HH:MM"
-            try {
-                val intent = Intent(Intent.ACTION_INSERT).apply {
-                    data = android.provider.CalendarContract.Events.CONTENT_URI
-                    putExtra(android.provider.CalendarContract.Events.TITLE, currentEvent.title)
-                    putExtra(android.provider.CalendarContract.Events.DESCRIPTION, currentEvent.description)
-                    putExtra(android.provider.CalendarContract.Events.EVENT_LOCATION, currentEvent.location)
-                    // You would need to parse the date/time properly here
-                    // For now, showing the intent without specific time
-                }
-                startActivity(intent)
-            } catch (e: Exception) {
-                Toast.makeText(context, "No se pudo abrir el calendario", Toast.LENGTH_SHORT).show()
+        try {
+            val intent = Intent(Intent.ACTION_INSERT).apply {
+                data = android.provider.CalendarContract.Events.CONTENT_URI
+                putExtra(android.provider.CalendarContract.Events.TITLE, eventDetailViewModel.getCalendarTitle())
+                putExtra(android.provider.CalendarContract.Events.DESCRIPTION, eventDetailViewModel.getCalendarDescription())
+                putExtra(android.provider.CalendarContract.Events.EVENT_LOCATION, eventDetailViewModel.getCalendarLocation())
+                // Note: Proper date/time parsing should be implemented based on your date format
             }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Toast.makeText(context, "No se pudo abrir el calendario", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setReminder() {
         // In a real app, you would set an alarm/notification
-        // For now, just add to calendar with a reminder
         Toast.makeText(context, "Recordatorio configurado para 15 minutos antes", Toast.LENGTH_SHORT).show()
     }
 
-    private fun showFullscreen(type: String, resourceUrl: String, overlay: View, image: ImageView, video: VideoView) {
+    private fun showFullscreen(type: String, resourceUrl: String) {
+        val overlay = view?.findViewById<View>(R.id.fullscreen_overlay) ?: return
+        val image = view?.findViewById<ImageView>(R.id.fullscreen_image) ?: return
+        val video = view?.findViewById<android.widget.VideoView>(R.id.fullscreen_video) ?: return
+        
         overlay.visibility = View.VISIBLE
+        
         if (type == "imagen") {
             image.visibility = View.VISIBLE
             video.visibility = View.GONE
-            // Load fullscreen image from URL
+            
             Glide.with(this)
                 .load(resourceUrl)
                 .placeholder(R.drawable.ic_default_event_image)
@@ -327,13 +337,23 @@ class EventDetailFragment : Fragment(), OnMapReadyCallback {
         } else if (type == "video") {
             video.visibility = View.VISIBLE
             image.visibility = View.GONE
-            // For video URLs, you would typically use ExoPlayer or similar
-            // For now, keeping the basic VideoView approach
+            
             if (resourceUrl.startsWith("http")) {
                 val videoUri = Uri.parse(resourceUrl)
                 video.setVideoURI(videoUri)
                 video.start()
             }
         }
+    }
+
+    private fun closeFullscreen(view: View) {
+        val overlay = view.findViewById<View>(R.id.fullscreen_overlay)
+        val video = view.findViewById<android.widget.VideoView>(R.id.fullscreen_video)
+        val image = view.findViewById<ImageView>(R.id.fullscreen_image)
+        
+        overlay.visibility = View.GONE
+        video.stopPlayback()
+        video.visibility = View.GONE
+        image.visibility = View.GONE
     }
 }

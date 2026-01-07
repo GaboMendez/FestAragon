@@ -36,7 +36,7 @@
             android:layout_weight="1"
             android:text="Detalles del Evento"
             android:textColor="@color/white"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:layout_marginStart="8dp" />
 
         <ImageButton
@@ -83,15 +83,19 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/black"
                     android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:layout_marginBottom="18dp"/>
 
                 <TextView
                     android:id="@+id/event_detail_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawablePadding="8dp"
                     android:text="Concierto"
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:gravity="center_vertical|start"
+                    android:drawablePadding="8dp"
                     app:drawableStartCompat="@android:drawable/ic_menu_slideshow" />
 
                 <LinearLayout
