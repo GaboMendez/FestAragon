@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -89,8 +90,10 @@ class MapEventsAdapter(
             favoriteButton.setOnClickListener {
                 if (favoriteButton.isChecked) {
                     favoritesViewModel.addFavorite(event)
+                    Toast.makeText(itemView.context, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
                 } else {
                     favoritesViewModel.removeFavorite(event)
+                    Toast.makeText(itemView.context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
                 }
             }
 

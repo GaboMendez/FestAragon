@@ -162,11 +162,6 @@
                             android:textColor="@android:color/darker_gray" />
                     </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ver mapa"
-                        android:textColor="@android:color/black" />
                 </LinearLayout>
 
                 <View
@@ -223,11 +218,12 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <View
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/map_location"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="12dp"
-                    android:background="#DDDDDD" />
+                    android:layout_height="200dp"
+                    android:layout_marginTop="12dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -236,24 +232,32 @@
                     android:orientation="horizontal">
 
                     <Button
+                        android:id="@+id/btn_como_llegar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="4dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@android:color/black"
+                        android:backgroundTint="@color/primary"
                         android:text="Cómo llegar"
                         android:textAllCaps="false"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        style="@style/Widget.MaterialComponents.Button" />
 
                     <Button
+                        android:id="@+id/btn_ver_mapa"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
-                        android:backgroundTint="#F5F5F5"
+                        android:backgroundTint="@color/primary"
+                        android:textColor="@android:color/white"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
                         android:text="Ver en mapa"
                         android:textAllCaps="false"
-                        android:textColor="@android:color/black" />
+                        style="@style/Widget.MaterialComponents.Button" />
                 </LinearLayout>
 
                 <!-- Organizer Section -->
@@ -266,68 +270,84 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:background="#F5F5F5">
-
-                    <ImageView
-                        android:id="@+id/organizer_image"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:src="@drawable/ic_profile_placeholder"
-                        android:scaleType="centerCrop" />
+                    app:cardBackgroundColor="#F8F9FA"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="#E0E0E0">
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
-                        <TextView
-                            android:id="@+id/organizer_name"
+                        <ImageView
+                            android:id="@+id/organizer_image"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@drawable/ic_profile_placeholder"
+                            android:scaleType="centerCrop" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/organizer_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Ayuntamiento de Aragón"
+                                android:textColor="@android:color/black"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/organizer_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Organizador oficial"
+                                android:textColor="@android:color/darker_gray"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btn_contact_organizer"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Ayuntamiento de Aragón"
-                            android:textColor="@android:color/black"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/organizer_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Organizador oficial"
-                            android:textColor="@android:color/darker_gray"
-                            android:textSize="12sp" />
+                            android:text="Contactar"
+                            android:textAllCaps="false"
+                            android:backgroundTint="@color/primary"
+                            android:textColor="@android:color/white"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            style="@style/Widget.MaterialComponents.Button" />
                     </LinearLayout>
 
-                    <Button
-                        android:id="@+id/btn_contact_organizer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Contactar"
-                        android:textAllCaps="false"
-                        android:backgroundTint="#E0E0E0"
-                        android:textColor="@android:color/black" />
-                </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <Button
                     android:id="@+id/btn_reminder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:backgroundTint="@android:color/black"
+                    android:backgroundTint="@color/primary"
                     android:drawableStart="@android:drawable/ic_lock_idle_alarm"
                     android:padding="12dp"
-                    android:text="Recordarme 15 min antes"
+                    android:text="Activar recordatorio"
                     android:textAllCaps="false"
-                    android:textColor="@android:color/white" />
+                    android:textColor="@android:color/white"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    style="@style/Widget.MaterialComponents.Button" />
 
                 <!-- Bottom Action Buttons -->
                 <LinearLayout

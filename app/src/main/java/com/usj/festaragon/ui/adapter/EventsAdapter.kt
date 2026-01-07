@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -60,8 +61,10 @@ class EventsAdapter(
         holder.favoriteToggle.setOnClickListener {
             if (holder.favoriteToggle.isChecked) {
                 favoritesViewModel.addFavorite(event)
+                Toast.makeText(holder.itemView.context, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
             } else {
                 favoritesViewModel.removeFavorite(event)
+                Toast.makeText(holder.itemView.context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
             }
         }
 
