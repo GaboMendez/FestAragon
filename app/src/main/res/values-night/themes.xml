@@ -1,7 +1,33 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.FestAragon" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Base application theme (Dark). -->
+    <style name="Base.Theme.FestAragon" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary brand colors -->
+        <item name="colorPrimary">@color/dark_primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimaryVariant">@color/fest_burgundy</item>
+        <item name="colorOnPrimary">@color/black</item>
+        
+        <!-- Secondary brand colors -->
+        <item name="colorSecondary">@color/dark_secondary</item>
+        <item name="colorSecondaryVariant">@color/secondary_dark</item>
+        <item name="colorOnSecondary">@color/black</item>
+        
+        <!-- Accent -->
+        <item name="colorAccent">@color/dark_secondary</item>
+        
+        <!-- Background colors -->
+        <item name="android:colorBackground">@color/dark_background</item>
+        <item name="colorSurface">@color/dark_surface</item>
+        <item name="colorSurfaceVariant">#3D3D3D</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurfaceVariant">#B3B3B3</item>
+        
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/dark_background</item>
+        <item name="android:navigationBarColor">@color/dark_surface</item>
+        
+        <!-- Text colors -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">#B3B3B3</item>
     </style>
 </resources>

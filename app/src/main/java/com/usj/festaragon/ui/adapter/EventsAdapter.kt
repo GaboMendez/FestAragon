@@ -1,12 +1,15 @@
-package com.usj.festaragon.ui
+package com.usj.festaragon.ui.adapter
 
+import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.viewmodel.FavoritesViewModel
@@ -29,7 +32,7 @@ class EventsAdapter(
         holder.title.text = event.title
 
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("dd/MM", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
         val date = try {
             inputFormat.parse(event.date)
         } catch (e: Exception) {
@@ -38,6 +41,20 @@ class EventsAdapter(
         holder.time.text = if (date != null) "${outputFormat.format(date)}, ${event.startTime}" else event.startTime
 
         holder.location.text = event.location
+
+        // Programmatically create and set the selector for the favorite toggle
+        val context = holder.itemView.context
+        val stateListDrawable = StateListDrawable()
+        stateListDrawable.addState(
+            intArrayOf(android.R.attr.state_checked),
+            ContextCompat.getDrawable(context, android.R.drawable.btn_star_big_on)
+        )
+        stateListDrawable.addState(
+            intArrayOf(),
+            ContextCompat.getDrawable(context, android.R.drawable.btn_star_big_off)
+        )
+        holder.favoriteToggle.background = stateListDrawable
+
         holder.favoriteToggle.isChecked = favoritesViewModel.isFavorite(event)
 
         holder.favoriteToggle.setOnClickListener {
@@ -48,20 +65,20 @@ class EventsAdapter(
             }
         }
 
+        // Load image from URL using Glide
+        if (event.imageUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(event.imageUrl)
+                .placeholder(R.drawable.ic_default_event_image)
+                .error(R.drawable.ic_default_event_image)
+                .centerCrop()
+                .into(holder.image)
+        } else {
+            holder.image.setImageResource(R.drawable.ic_default_event_image)
+        }
+        
         holder.itemView.setOnClickListener {
             onEventClick(event)
-        }
-
-        // Set image from data
-        event.imageName?.let { name ->
-            val resourceId = holder.itemView.context.resources.getIdentifier(name, "drawable", holder.itemView.context.packageName)
-            if (resourceId != 0) {
-                holder.image.setImageResource(resourceId)
-            } else {
-                holder.image.setImageResource(R.drawable.ic_launcher_background)
-            }
-        } ?: run {
-            holder.image.setImageResource(R.drawable.ic_launcher_background)
         }
     }
 

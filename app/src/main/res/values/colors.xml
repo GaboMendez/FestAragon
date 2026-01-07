@@ -2,4 +2,57 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- FestAragón Brand Colors (from logo) -->
+    <color name="fest_burgundy">#B22234</color>
+    <color name="fest_burgundy_dark">#8B1A1D</color>
+    <color name="fest_burgundy_light">#C62828</color>
+    <color name="fest_golden">#E8A630</color>
+    <color name="fest_golden_dark">#C98D1C</color>
+    <color name="fest_golden_light">#F5C04A</color>
+    
+    <!-- Primary Colors (Burgundy theme) -->
+    <color name="primary">#B22234</color>
+    <color name="primary_dark">#8B1A1D</color>
+    <color name="primary_light">#C62828</color>
+    <color name="primary_variant">#7B1518</color>
+    
+    <!-- Secondary Colors (Golden theme) -->
+    <color name="secondary">#E5A832</color>
+    <color name="secondary_dark">#C98D1C</color>
+    <color name="secondary_light">#F5C04A</color>
+    <color name="secondary_variant">#D4941F</color>
+    
+    <!-- Accent -->
+    <color name="accent">#E5A832</color>
+    
+    <!-- Category Colors -->
+    <color name="category_music">#9C27B0</color>
+    <color name="category_cultural">#2196F3</color>
+    <color name="category_infantil">#4CAF50</color>
+    <color name="category_tradicional">#FF9800</color>
+    
+    <!-- UI Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_secondary">#212121</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="background">#FFFBF5</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#FFF8E1</color>
+    
+    <!-- Bottom Navigation Colors -->
+    <color name="bottom_nav_background">#FFFFFF</color>
+    <color name="bottom_nav_selected">#A41E22</color>
+    <color name="bottom_nav_unselected">#757575</color>
+    
+    <!-- Splash Screen -->
+    <color name="splash_background">#FFFBF5</color>
+    
+    <!-- Dark Theme Colors -->
+    <color name="dark_background">#1A1A1A</color>
+    <color name="dark_surface">#2D2D2D</color>
+    <color name="dark_primary">#E57373</color>
+    <color name="dark_secondary">#FFD54F</color>
 </resources>

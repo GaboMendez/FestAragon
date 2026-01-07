@@ -1,6 +1,10 @@
 package com.usj.festaragon.ui
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +14,8 @@ import android.widget.EditText
 import android.widget.GridLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
+import android.widget.ToggleButton
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,8 +24,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
+import com.usj.festaragon.ui.adapter.EventsAdapter
 import com.usj.festaragon.model.Multimedia
 import com.usj.festaragon.viewmodel.FavoritesViewModel
+import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -28,12 +36,16 @@ import java.util.Locale
 class HomeFragment : Fragment() {
 
     private val favoritesViewModel: FavoritesViewModel by activityViewModels()
+    private lateinit var eventosArray: JSONArray
+    private val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private lateinit var showPastEventsSwitch: SwitchCompat
+    private val categoryToggleButtons = mutableListOf<ToggleButton>()
+    private var selectedCategoryId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
@@ -45,10 +57,11 @@ class HomeFragment : Fragment() {
         val categoryButtonsContainer = view.findViewById<GridLayout>(R.id.category_buttons_container)
         val dayFilterContainer = view.findViewById<LinearLayout>(R.id.day_filter_container)
         val todayEventsRecyclerView = view.findViewById<RecyclerView>(R.id.today_events_recycler_view)
+        showPastEventsSwitch = view.findViewById(R.id.show_past_events_switch)
 
         val jsonString = requireContext().assets.open("data-pueblo.json").bufferedReader().use { it.readText() }
         val jsonObject = JSONObject(jsonString)
-        val eventosArray = jsonObject.getJSONArray("eventos")
+        eventosArray = jsonObject.getJSONArray("eventos")
 
         // Category buttons
         val categoriasArray = jsonObject.getJSONArray("categorias")
@@ -57,62 +70,61 @@ class HomeFragment : Fragment() {
             val categoriaNombre = categoria.getString("nombre")
             val categoriaId = categoria.getString("id")
 
-            val button = Button(requireContext())
-            button.text = categoriaNombre
+            val toggleButton = ToggleButton(requireContext()).apply {
+                textOn = categoriaNombre
+                textOff = categoriaNombre
+                text = categoriaNombre
+                tag = categoriaId
+                background = createToggleBackgroundSelector()
+                setTextColor(createToggleTextColorSelector())
+            }
+            categoryToggleButtons.add(toggleButton)
 
             val params = GridLayout.LayoutParams()
             params.width = 0
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f)
             params.setMargins(8, 8, 8, 8)
-            button.layoutParams = params
+            toggleButton.layoutParams = params
 
-            button.setOnClickListener {
-                val results = mutableListOf<Event>()
-                for (j in 0 until eventosArray.length()) {
-                    val evento = eventosArray.getJSONObject(j)
-                    if (evento.getString("categoriaId") == categoriaId) {
-                        results.add(createEventFromJsonObject(evento))
+            toggleButton.setOnClickListener { clickedButton ->
+                if ((clickedButton as ToggleButton).isChecked) {
+                    selectedCategoryId = clickedButton.tag as String
+                    categoryToggleButtons.forEach { otherButton ->
+                        if (otherButton != clickedButton) {
+                            otherButton.isChecked = false
+                        }
                     }
+                } else {
+                    selectedCategoryId = null
                 }
-                navigateToSearchResults(results)
+                // Trigger filtering when category is selected/deselected
+                filterEvents(showPastEventsSwitch.isChecked) { evento ->
+                    selectedCategoryId == null || evento.getString("categoriaId") == selectedCategoryId
+                }
             }
-            categoryButtonsContainer.addView(button)
+            categoryButtonsContainer.addView(toggleButton)
         }
 
-        // Day filter buttons
+        // Day filter buttons (logic remains the same, triggers search)
         val firstEventDateString = eventosArray.getJSONObject(0).getString("inicio")
         val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val calendar = Calendar.getInstance()
         calendar.time = parser.parse(firstEventDateString)!!
-
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val dayFormat = SimpleDateFormat("dd", Locale.getDefault())
-
         for (i in 0..4) {
-            val button = Button(requireContext())
-            button.text = dayFormat.format(calendar.time)
-            if (i == 0) {
-                button.setTypeface(null, Typeface.BOLD)
+            val button = Button(requireContext()).apply{
+                text = dayFormat.format(calendar.time)
+                if (i == 0) {
+                    setTypeface(null, Typeface.BOLD)
+                }
+                val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+                layoutParams = params
             }
-
-            val params = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1f
-            )
-            button.layoutParams = params
-
             val dayString = sdf.format(calendar.time)
             button.setOnClickListener {
-                val results = mutableListOf<Event>()
-                for (j in 0 until eventosArray.length()) {
-                    val evento = eventosArray.getJSONObject(j)
-                    val inicio = evento.getString("inicio").substring(0, 10)
-                    if (inicio == dayString) {
-                        results.add(createEventFromJsonObject(evento))
-                    }
+                 filterEvents(showPastEventsSwitch.isChecked) { evento ->
+                    evento.getString("inicio").substring(0, 10) == dayString
                 }
-                navigateToSearchResults(results)
             }
             dayFilterContainer.addView(button)
             calendar.add(Calendar.DAY_OF_YEAR, 1)
@@ -121,14 +133,11 @@ class HomeFragment : Fragment() {
         // Today's Events
         val todayEvents = mutableListOf<Event>()
         val todayString = sdf.format(parser.parse(firstEventDateString)!!)
-        for (i in 0 until eventosArray.length()) {
-            val evento = eventosArray.getJSONObject(i)
-            val inicio = evento.getString("inicio").substring(0, 10)
-            if (inicio == todayString) {
+        eventosArray.forEach { evento ->
+            if (evento.getString("inicio").substring(0, 10) == todayString) {
                 todayEvents.add(createEventFromJsonObject(evento))
             }
         }
-
         todayEventsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         todayEventsRecyclerView.adapter = EventsAdapter(todayEvents, favoritesViewModel) { event ->
             navigateToEventDetail(event)
@@ -136,20 +145,64 @@ class HomeFragment : Fragment() {
 
         searchButton.setOnClickListener {
             val searchTerm = searchEditText.text.toString()
-            if (searchTerm.isNotEmpty()) {
-                val results = mutableListOf<Event>()
-                for (i in 0 until eventosArray.length()) {
-                    val evento = eventosArray.getJSONObject(i)
-                    if (evento.getString("titulo").contains(searchTerm, ignoreCase = true)) {
-                        results.add(createEventFromJsonObject(evento))
-                    }
-                }
-                navigateToSearchResults(results)
+            filterEvents(showPastEventsSwitch.isChecked) { evento ->
+                val matchesText = searchTerm.isEmpty() || evento.getString("titulo").contains(searchTerm, ignoreCase = true)
+                val matchesCategory = selectedCategoryId == null || evento.getString("categoriaId") == selectedCategoryId
+                matchesText && matchesCategory
             }
         }
     }
+    private fun createToggleBackgroundSelector(): StateListDrawable {
+        val stateListDrawable = StateListDrawable()
+        val checkedDrawable = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(Color.parseColor("#424242"))
+            cornerRadius = 20f * resources.displayMetrics.density
+        }
+        val uncheckedDrawable = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            setColor(Color.parseColor("#EEEEEE"))
+            setStroke( (1f * resources.displayMetrics.density).toInt(), Color.parseColor("#BDBDBD"))
+            cornerRadius = 20f * resources.displayMetrics.density
+        }
+        stateListDrawable.addState(intArrayOf(android.R.attr.state_checked), checkedDrawable)
+        stateListDrawable.addState(intArrayOf(), uncheckedDrawable)
+        return stateListDrawable
+    }
+
+    private fun createToggleTextColorSelector(): ColorStateList {
+        val states = arrayOf(
+            intArrayOf(android.R.attr.state_checked),
+            intArrayOf()
+        )
+        val colors = intArrayOf(
+            Color.WHITE,
+            Color.BLACK
+        )
+        return ColorStateList(states, colors)
+    }
+
+    private fun filterEvents(showPast: Boolean, filter: (JSONObject) -> Boolean) {
+        val results = mutableListOf<Event>()
+        val testDateCalendar = Calendar.getInstance().apply {
+            set(2025, Calendar.AUGUST, 10)
+        }
+
+        eventosArray.forEach { evento ->
+            val eventDate = sdf.parse(evento.getString("inicio").substring(0, 10))
+            if (filter(evento)) {
+                if (showPast || !eventDate.before(testDateCalendar.time)) {
+                    results.add(createEventFromJsonObject(evento))
+                }
+            }
+        }
+        navigateToSearchResults(results)
+    }
 
     private fun createEventFromJsonObject(jsonObject: JSONObject): Event {
+        val multimedia = jsonObject.optJSONObject("multimedia")
+        val imageUrl = multimedia?.optString("recurso", "") ?: ""
+        
         val multimediaArray = jsonObject.optJSONArray("multimedia")
         val multimediaList = mutableListOf<Multimedia>()
         
@@ -183,6 +236,7 @@ class HomeFragment : Fragment() {
             endTime = jsonObject.getString("fin").substring(11, 16),
             location = jsonObject.getJSONObject("lugar").getString("nombre"),
             description = jsonObject.optString("descripcion"),
+            imageUrl = imageUrl,
             imageName = imageName,
             multimedia = multimediaList
         )
@@ -192,15 +246,6 @@ class HomeFragment : Fragment() {
         parentFragmentManager.commit {
             replace(R.id.fragment_container, SearchResultsFragment().apply {
                 arguments = bundleOf("searchResults" to ArrayList(results))
-            })
-            addToBackStack(null)
-        }
-    }
-
-    private fun navigateToEventDetail(event: Event) {
-        parentFragmentManager.commit {
-            replace(R.id.fragment_container, EventDetailFragment().apply {
-                arguments = bundleOf("event" to event)
             })
             addToBackStack(null)
         }
