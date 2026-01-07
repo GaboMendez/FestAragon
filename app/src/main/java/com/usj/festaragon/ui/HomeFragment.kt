@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
+import com.usj.festaragon.ui.adapter.EventsAdapter
 import com.usj.festaragon.viewmodel.FavoritesViewModel
 import org.json.JSONArray
 import org.json.JSONObject
@@ -94,6 +95,10 @@ class HomeFragment : Fragment() {
                     }
                 } else {
                     selectedCategoryId = null
+                }
+                // Trigger filtering when category is selected/deselected
+                filterEvents(showPastEventsSwitch.isChecked) { evento ->
+                    selectedCategoryId == null || evento.getString("categoriaId") == selectedCategoryId
                 }
             }
             categoryButtonsContainer.addView(toggleButton)
@@ -192,13 +197,17 @@ class HomeFragment : Fragment() {
     }
 
     private fun createEventFromJsonObject(jsonObject: JSONObject): Event {
+        val multimedia = jsonObject.optJSONObject("multimedia")
+        val imageUrl = multimedia?.optString("recurso", "") ?: ""
+        
         return Event(
             id = jsonObject.getString("id"),
             title = jsonObject.getString("titulo"),
             date = jsonObject.getString("inicio").substring(0, 10),
             startTime = jsonObject.getString("inicio").substring(11, 16),
             endTime = jsonObject.getString("fin").substring(11, 16),
-            location = jsonObject.getJSONObject("lugar").getString("nombre")
+            location = jsonObject.getJSONObject("lugar").getString("nombre"),
+            imageUrl = imageUrl
         )
     }
 
@@ -210,11 +219,12 @@ class HomeFragment : Fragment() {
             addToBackStack(null)
         }
     }
-}
 
-// Extension function to iterate over JSONArray
-fun JSONArray.forEach(action: (JSONObject) -> Unit) {
-    for (i in 0 until this.length()) {
-        action(this.getJSONObject(i))
+    // Extension function to iterate over JSONArray
+    fun JSONArray.forEach(action: (JSONObject) -> Unit) {
+        for (i in 0 until this.length()) {
+            action(this.getJSONObject(i))
+        }
     }
 }
+

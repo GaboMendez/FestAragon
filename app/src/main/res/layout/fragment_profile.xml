@@ -4,34 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
     android:orientation="vertical"
+    android:background="@color/background"
     tools:context=".ui.ProfileFragment">
 
-    <!-- Header (Title only) -->
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Mi Perfil"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:background="@color/primary"
+        app:titleCentered="true"
+        app:titleTextColor="@color/white"
+        app:title="Mi Perfil" />
 
     <!-- User Profile Section -->
     <LinearLayout
         android:id="@+id/profile_header_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/surface"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingStart="16dp"
@@ -47,8 +39,8 @@
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 android:src="@drawable/ic_profile_placeholder"
-                app:civ_border_color="#FFF"
-                app:civ_border_width="2dp" />
+                app:civ_border_color="@color/fest_golden"
+                app:civ_border_width="3dp" />
         </FrameLayout>
 
         <LinearLayout
@@ -63,6 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="María García"
+                android:textColor="@color/text_primary"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textStyle="bold" />
 
@@ -71,14 +64,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="maria.garcia@email.com"
-                android:textColor="@android:color/darker_gray" />
+                android:textColor="@color/text_secondary" />
 
             <TextView
                 android:id="@+id/header_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+34 612 345 678"
-                android:textColor="@android:color/darker_gray"
+                android:textColor="@color/text_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
     </LinearLayout>

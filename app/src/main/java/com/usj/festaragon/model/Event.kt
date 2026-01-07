@@ -11,5 +11,10 @@ data class Event(
     val startTime: String,
     val endTime: String,
     val location: String,
+    val description: String = "",
+    val categoryId: String = "",
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
+    val imageUrl: String = "",
     var isFavorite: Boolean = false
 ) : Parcelable
