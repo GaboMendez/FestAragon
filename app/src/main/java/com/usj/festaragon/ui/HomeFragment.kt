@@ -200,33 +200,26 @@ class HomeFragment : Fragment() {
     }
 
     private fun createEventFromJsonObject(jsonObject: JSONObject): Event {
-        val multimedia = jsonObject.optJSONObject("multimedia")
-        val imageUrl = multimedia?.optString("recurso", "") ?: ""
-        
-        val multimediaArray = jsonObject.optJSONArray("multimedia")
+        // Parse multimedia array
+        val multimediaArray = jsonObject.getJSONArray("multimedia")
         val multimediaList = mutableListOf<Multimedia>()
         
-        if (multimediaArray != null) {
-            for (i in 0 until multimediaArray.length()) {
-                val mediaObj = multimediaArray.getJSONObject(i)
-                multimediaList.add(Multimedia(
-                    type = mediaObj.getString("tipo"),
-                    resource = mediaObj.getString("recurso")
-                ))
-            }
-        } else {
-            // Handle case where it's still a single object (backward compatibility or if only one is provided)
-            val multimediaObj = jsonObject.optJSONObject("multimedia")
-            if (multimediaObj != null) {
-                multimediaList.add(Multimedia(
-                    type = multimediaObj.getString("tipo"),
-                    resource = multimediaObj.getString("recurso")
-                ))
-            }
+        for (i in 0 until multimediaArray.length()) {
+            val mediaObj = multimediaArray.getJSONObject(i)
+            multimediaList.add(Multimedia(
+                type = mediaObj.getString("tipo"),
+                resource = mediaObj.getString("recurso")
+            ))
         }
         
-        val mainImageResource = multimediaList.find { it.type == "imagen" }?.resource
-        val imageName = mainImageResource?.substringBeforeLast(".")
+        // Get first image from array as the main imageUrl
+        val imageUrl = multimediaList.firstOrNull { it.type == "imagen" }?.resource ?: ""
+        val imageName = imageUrl.substringBeforeLast(".").takeIf { it.isNotEmpty() }
+
+        // Read category and organizer directly from JSON
+        val categoryId = jsonObject.getString("categoriaId")
+        val organizerName = jsonObject.optString("organizadorNombre", "")
+        val organizerContact = jsonObject.optString("organizadorContacto", "")
 
         return Event(
             id = jsonObject.getString("id"),
@@ -238,7 +231,10 @@ class HomeFragment : Fragment() {
             description = jsonObject.optString("descripcion"),
             imageUrl = imageUrl,
             imageName = imageName,
-            multimedia = multimediaList
+            multimedia = multimediaList,
+            categoryId = categoryId,
+            organizerName = organizerName,
+            organizerContact = organizerContact
         )
     }
 

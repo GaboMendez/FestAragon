@@ -24,5 +24,7 @@ data class Event(
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val imageUrl: String = "",
+    val organizerName: String = "",
+    val organizerContact: String = "",
     var isFavorite: Boolean = false
 ) : Parcelable

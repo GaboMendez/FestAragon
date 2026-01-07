@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.VideoView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.android.material.appbar.MaterialToolbar
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
@@ -50,21 +51,24 @@ class EventDetailFragment : Fragment() {
 
         event?.let { eventItem ->
             view.findViewById<TextView>(R.id.event_detail_title).text = eventItem.title
+            view.findViewById<TextView>(R.id.event_detail_category).text = eventItem.categoryId
             view.findViewById<TextView>(R.id.event_detail_date_full).text = eventItem.date
             view.findViewById<TextView>(R.id.event_detail_time).text = "${eventItem.startTime} - ${eventItem.endTime}"
             view.findViewById<TextView>(R.id.event_detail_location_name).text = eventItem.location
             view.findViewById<TextView>(R.id.event_detail_description_text).text = eventItem.description
+            view.findViewById<TextView>(R.id.organizer_name).text = eventItem.organizerName
             
             val eventImage = view.findViewById<ImageView>(R.id.event_image_large)
-            eventItem.imageName?.let { name ->
-                val resourceId = resources.getIdentifier(name, "drawable", requireContext().packageName)
-                if (resourceId != 0) {
-                    eventImage.setImageResource(resourceId)
-                } else {
-                    eventImage.setImageResource(R.drawable.ic_launcher_background)
-                }
-            } ?: run {
-                eventImage.setImageResource(R.drawable.ic_launcher_background)
+            // Load image using Glide from URL
+            if (eventItem.imageUrl.isNotEmpty()) {
+                Glide.with(this)
+                    .load(eventItem.imageUrl)
+                    .placeholder(R.drawable.ic_default_event_image)
+                    .error(R.drawable.ic_default_event_image)
+                    .centerCrop()
+                    .into(eventImage)
+            } else {
+                eventImage.setImageResource(R.drawable.ic_default_event_image)
             }
 
             // Multimedia Gallery
@@ -76,17 +80,16 @@ class EventDetailFragment : Fragment() {
                     }
                     scaleType = ImageView.ScaleType.CENTER_CROP
                     
-                    val resourceName = media.resource.substringBeforeLast(".")
-                    val resId = resources.getIdentifier(resourceName, "drawable", requireContext().packageName)
-                    
-                    if (resId != 0) {
-                        setImageResource(resId)
-                    } else {
-                        setImageResource(R.drawable.ic_launcher_background)
-                    }
+                    // Load multimedia images from URL
+                    Glide.with(this@EventDetailFragment)
+                        .load(media.resource)
+                        .placeholder(R.drawable.ic_default_event_image)
+                        .error(R.drawable.ic_default_event_image)
+                        .centerCrop()
+                        .into(this)
 
                     setOnClickListener {
-                        showFullscreen(media.type, resourceName, fullscreenOverlay, fullscreenImage, fullscreenVideo)
+                        showFullscreen(media.type, media.resource, fullscreenOverlay, fullscreenImage, fullscreenVideo)
                     }
                 }
                 multimediaContainer.addView(itemView)
@@ -105,20 +108,25 @@ class EventDetailFragment : Fragment() {
         }
     }
 
-    private fun showFullscreen(type: String, resourceName: String, overlay: View, image: ImageView, video: VideoView) {
+    private fun showFullscreen(type: String, resourceUrl: String, overlay: View, image: ImageView, video: VideoView) {
         overlay.visibility = View.VISIBLE
         if (type == "imagen") {
             image.visibility = View.VISIBLE
             video.visibility = View.GONE
-            val resId = resources.getIdentifier(resourceName, "drawable", requireContext().packageName)
-            if (resId != 0) image.setImageResource(resId)
+            // Load fullscreen image from URL
+            Glide.with(this)
+                .load(resourceUrl)
+                .placeholder(R.drawable.ic_default_event_image)
+                .error(R.drawable.ic_default_event_image)
+                .fitCenter()
+                .into(image)
         } else if (type == "video") {
             video.visibility = View.VISIBLE
             image.visibility = View.GONE
-            // Assuming videos are in res/raw
-            val videoResId = resources.getIdentifier(resourceName, "raw", requireContext().packageName)
-            if (videoResId != 0) {
-                val videoUri = Uri.parse("android.resource://${requireContext().packageName}/$videoResId")
+            // For video URLs, you would typically use ExoPlayer or similar
+            // For now, keeping the basic VideoView approach
+            if (resourceUrl.startsWith("http")) {
+                val videoUri = Uri.parse(resourceUrl)
                 video.setVideoURI(videoUri)
                 video.start()
             }
