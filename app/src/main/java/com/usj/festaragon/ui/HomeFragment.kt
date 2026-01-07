@@ -23,6 +23,7 @@ import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
+import com.usj.festaragon.data.DataRepository
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.ui.adapter.EventsAdapter
 import com.usj.festaragon.model.Multimedia
@@ -59,12 +60,11 @@ class HomeFragment : Fragment() {
         val todayEventsRecyclerView = view.findViewById<RecyclerView>(R.id.today_events_recycler_view)
         showPastEventsSwitch = view.findViewById(R.id.show_past_events_switch)
 
-        val jsonString = requireContext().assets.open("data-pueblo.json").bufferedReader().use { it.readText() }
-        val jsonObject = JSONObject(jsonString)
-        eventosArray = jsonObject.getJSONArray("eventos")
+        // Get data from repository
+        eventosArray = DataRepository.getEventosArray() ?: JSONArray()
 
         // Category buttons
-        val categoriasArray = jsonObject.getJSONArray("categorias")
+        val categoriasArray = DataRepository.getCategoriasArray() ?: JSONArray()
         for (i in 0 until categoriasArray.length()) {
             val categoria = categoriasArray.getJSONObject(i)
             val categoriaNombre = categoria.getString("nombre")
@@ -201,7 +201,7 @@ class HomeFragment : Fragment() {
 
     private fun createEventFromJsonObject(jsonObject: JSONObject): Event {
         // Parse multimedia array
-        val multimediaArray = jsonObject.getJSONArray("multimedia")
+        val multimediaArray = jsonObject.optJSONArray("multimedia") ?: JSONArray()
         val multimediaList = mutableListOf<Multimedia>()
         
         for (i in 0 until multimediaArray.length()) {
@@ -216,10 +216,25 @@ class HomeFragment : Fragment() {
         val imageUrl = multimediaList.firstOrNull { it.type == "imagen" }?.resource ?: ""
         val imageName = imageUrl.substringBeforeLast(".").takeIf { it.isNotEmpty() }
 
-        // Read category and organizer directly from JSON
+        // Get category name from repository
         val categoryId = jsonObject.getString("categoriaId")
-        val organizerName = jsonObject.optString("organizadorNombre", "")
-        val organizerContact = jsonObject.optString("organizadorContacto", "")
+        val categoryName = DataRepository.getCategories().find { it.id == categoryId }?.name ?: categoryId
+        
+        // Get organizer info from repository
+        val organizadorId = jsonObject.getString("organizadorId")
+        val organizer = DataRepository.getOrganizadoresArray()?.let { array ->
+            (0 until array.length()).map { array.getJSONObject(it) }
+                .find { it.getString("id") == organizadorId }
+        }
+        val organizerName = organizer?.getString("nombre") ?: ""
+        val organizerContact = organizer?.getString("contacto") ?: ""
+        
+        // Parse location with default values
+        val lugar = jsonObject.optJSONObject("lugar")
+        val locationName = lugar?.optString("nombre", "") ?: ""
+        val coordenadas = lugar?.optJSONObject("coordenadas")
+        val lat = coordenadas?.optDouble("lat", 0.0) ?: 0.0
+        val lng = coordenadas?.optDouble("lng", 0.0) ?: 0.0
 
         return Event(
             id = jsonObject.getString("id"),
@@ -227,14 +242,17 @@ class HomeFragment : Fragment() {
             date = jsonObject.getString("inicio").substring(0, 10),
             startTime = jsonObject.getString("inicio").substring(11, 16),
             endTime = jsonObject.getString("fin").substring(11, 16),
-            location = jsonObject.getJSONObject("lugar").getString("nombre"),
-            description = jsonObject.optString("descripcion"),
+            location = locationName,
+            description = jsonObject.optString("descripcion", ""),
             imageUrl = imageUrl,
             imageName = imageName,
             multimedia = multimediaList,
             categoryId = categoryId,
+            categoryName = categoryName,
             organizerName = organizerName,
-            organizerContact = organizerContact
+            organizerContact = organizerContact,
+            latitude = lat,
+            longitude = lng
         )
     }
 

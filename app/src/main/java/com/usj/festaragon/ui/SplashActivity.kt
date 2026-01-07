@@ -7,6 +7,7 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import com.usj.festaragon.MainActivity
 import com.usj.festaragon.R
+import com.usj.festaragon.data.DataRepository
 
 class SplashActivity : AppCompatActivity() {
 
@@ -14,9 +15,12 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
+        // Initialize data repository
+        DataRepository.initialize(this)
+
         Handler(Looper.getMainLooper()).postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             finish()
-        }, 1000)
+        }, 500)
     }
 }

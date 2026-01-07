@@ -21,6 +21,7 @@ data class Event(
     val imageName: String? = null,
     val multimedia: List<Multimedia> = emptyList(),
     val categoryId: String = "",
+    val categoryName: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
     val imageUrl: String = "",

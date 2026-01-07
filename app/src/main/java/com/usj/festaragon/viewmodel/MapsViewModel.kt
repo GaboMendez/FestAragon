@@ -5,6 +5,7 @@ import android.location.Location
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.usj.festaragon.data.DataRepository
 import com.usj.festaragon.model.Event
 import org.json.JSONArray
 import org.json.JSONObject
@@ -38,59 +39,24 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
     )
 
     init {
-        loadEventsFromAssets()
+        loadEventsFromRepository()
     }
 
-    private fun loadEventsFromAssets() {
+    private fun loadEventsFromRepository() {
         try {
-            val jsonString = getApplication<Application>().assets
-                .open("data-pueblo.json")
-                .bufferedReader()
-                .use { it.readText() }
-
-            val jsonObject = JSONObject(jsonString)
-            val eventosArray = jsonObject.getJSONArray("eventos")
-            val categoriasArray = jsonObject.getJSONArray("categorias")
-
-            // Load categories
-            val categoryList = mutableListOf<Category>()
-            for (i in 0 until categoriasArray.length()) {
-                val cat = categoriasArray.getJSONObject(i)
-                categoryList.add(
-                    Category(
-                        id = cat.getString("id"),
-                        name = cat.getString("nombre"),
-                        icon = cat.getString("icono")
-                    )
+            // Get categories from repository
+            val repoCategories = DataRepository.getCategories()
+            val categoryList = repoCategories.map { cat ->
+                Category(
+                    id = cat.id,
+                    name = cat.name,
+                    icon = cat.icon
                 )
             }
             _categories.value = categoryList
 
-            // Load events
-            val eventList = mutableListOf<Event>()
-            for (i in 0 until eventosArray.length()) {
-                val evento = eventosArray.getJSONObject(i)
-                val lugar = evento.getJSONObject("lugar")
-                val coordenadas = lugar.getJSONObject("coordenadas")
-                val multimedia = evento.optJSONObject("multimedia")
-                val imageUrl = multimedia?.optString("recurso", "") ?: ""
-
-                eventList.add(
-                    Event(
-                        id = evento.getString("id"),
-                        title = evento.getString("titulo"),
-                        description = evento.getString("descripcion"),
-                        date = evento.getString("inicio").substring(0, 10),
-                        startTime = evento.getString("inicio").substring(11, 16),
-                        endTime = evento.getString("fin").substring(11, 16),
-                        location = lugar.getString("nombre"),
-                        categoryId = evento.getString("categoriaId"),
-                        latitude = coordenadas.getDouble("lat"),
-                        longitude = coordenadas.getDouble("lng"),
-                        imageUrl = imageUrl
-                    )
-                )
-            }
+            // Get events from repository
+            val eventList = DataRepository.getEvents()
             allEvents = eventList
             _events.value = eventList
             _filteredEvents.value = eventList

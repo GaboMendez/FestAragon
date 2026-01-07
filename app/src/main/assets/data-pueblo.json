@@ -4,7 +4,6 @@
     "timezone": "Europe/Madrid",
     "ultimaActualizacion": "2026-01-07T10:00:00Z"
   },
-
   "pueblo": {
     "nombre": "Zaragoza",
     "provincia": "Zaragoza",
@@ -18,7 +17,6 @@
       "fin": "2026-01-31"
     }
   },
-
   "categorias": [
     {
       "id": "musica",
@@ -41,7 +39,6 @@
       "icono": "ic_traditional"
     }
   ],
-
   "organizadores": [
     {
       "id": "ayuntamiento",
@@ -64,7 +61,6 @@
       "contacto": "info@caixaforum.es"
     }
   ],
-
   "eventos": [
     {
       "id": "evt_001",
@@ -72,8 +68,6 @@
       "descripcion": "Tradicional cabalgata de los Reyes Magos de Oriente por las calles del centro de Zaragoza.",
       "categoriaId": "tradicional",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-05T18:00:00",
       "fin": "2026-01-05T21:00:00",
       "lugar": {
@@ -98,7 +92,11 @@
           "recurso": "https://images.unsplash.com/photo-1482575832494-771f74bf6857"
         }
       ],
-      "tags": ["reyes magos", "cabalgata", "tradicional"]
+      "tags": [
+        "reyes magos",
+        "cabalgata",
+        "tradicional"
+      ]
     },
     {
       "id": "evt_002",
@@ -106,8 +104,6 @@
       "descripcion": "Concierto extraordinario de la Orquesta Sinfónica de Aragón para celebrar el nuevo año.",
       "categoriaId": "musica",
       "organizadorId": "auditorio",
-      "organizadorNombre": "Auditorio de Zaragoza",
-      "organizadorContacto": "info@auditoriozaragoza.com",
       "inicio": "2026-01-06T20:00:00",
       "fin": "2026-01-06T22:00:00",
       "lugar": {
@@ -132,7 +128,11 @@
           "recurso": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64"
         }
       ],
-      "tags": ["musica", "orquesta", "concierto"]
+      "tags": [
+        "musica",
+        "orquesta",
+        "concierto"
+      ]
     },
     {
       "id": "evt_003",
@@ -140,8 +140,6 @@
       "descripcion": "Muestra de obras maestras de Francisco de Goya en el museo que lleva su nombre.",
       "categoriaId": "cultural",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-07T10:00:00",
       "fin": "2026-01-07T20:00:00",
       "lugar": {
@@ -166,7 +164,11 @@
           "recurso": "https://images.unsplash.com/photo-1561214115-f2f134cc4912"
         }
       ],
-      "tags": ["goya", "arte", "museo"]
+      "tags": [
+        "goya",
+        "arte",
+        "museo"
+      ]
     },
     {
       "id": "evt_004",
@@ -174,8 +176,6 @@
       "descripcion": "Adaptación teatral del clásico de Saint-Exupéry para toda la familia.",
       "categoriaId": "infantil",
       "organizadorId": "teatro_principal",
-      "organizadorNombre": "Teatro Principal",
-      "organizadorContacto": "info@teatroprincipalzaragoza.com",
       "inicio": "2026-01-08T18:00:00",
       "fin": "2026-01-08T19:30:00",
       "lugar": {
@@ -200,7 +200,11 @@
           "recurso": "https://images.unsplash.com/photo-1478147427282-58a87a120781"
         }
       ],
-      "tags": ["teatro", "niños", "familia"]
+      "tags": [
+        "teatro",
+        "niños",
+        "familia"
+      ]
     },
     {
       "id": "evt_005",
@@ -208,8 +212,6 @@
       "descripcion": "Mercado tradicional con artesanía, gastronomía y espectáculos de época.",
       "categoriaId": "tradicional",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-10T11:00:00",
       "fin": "2026-01-10T20:00:00",
       "lugar": {
@@ -234,7 +236,11 @@
           "recurso": "https://images.unsplash.com/photo-1533900298318-6b8da08a523e"
         }
       ],
-      "tags": ["mercado", "medieval", "artesania"]
+      "tags": [
+        "mercado",
+        "medieval",
+        "artesania"
+      ]
     },
     {
       "id": "evt_006",
@@ -242,8 +248,6 @@
       "descripcion": "Noche de jazz en directo con artistas locales e internacionales.",
       "categoriaId": "musica",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-11T21:00:00",
       "fin": "2026-01-11T23:30:00",
       "lugar": {
@@ -268,7 +272,11 @@
           "recurso": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819"
         }
       ],
-      "tags": ["jazz", "musica", "concierto"]
+      "tags": [
+        "jazz",
+        "musica",
+        "concierto"
+      ]
     },
     {
       "id": "evt_007",
@@ -276,8 +284,6 @@
       "descripcion": "Aprende los fundamentos de la robótica y la programación de forma divertida.",
       "categoriaId": "infantil",
       "organizadorId": "caixaforum",
-      "organizadorNombre": "CaixaForum Zaragoza",
-      "organizadorContacto": "info@caixaforum.es",
       "inicio": "2026-01-12T11:00:00",
       "fin": "2026-01-12T13:00:00",
       "lugar": {
@@ -302,7 +308,11 @@
           "recurso": "https://images.unsplash.com/photo-1561557944-6e7860d1a7eb"
         }
       ],
-      "tags": ["robotica", "niños", "tecnologia"]
+      "tags": [
+        "robotica",
+        "niños",
+        "tecnologia"
+      ]
     },
     {
       "id": "evt_008",
@@ -310,8 +320,6 @@
       "descripcion": "Colección permanente del escultor aragonés Pablo Gargallo.",
       "categoriaId": "cultural",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-13T10:00:00",
       "fin": "2026-01-13T20:00:00",
       "lugar": {
@@ -336,7 +344,11 @@
           "recurso": "https://images.unsplash.com/photo-1578926078792-f5d7bbb9c530"
         }
       ],
-      "tags": ["escultura", "arte", "gargallo"]
+      "tags": [
+        "escultura",
+        "arte",
+        "gargallo"
+      ]
     },
     {
       "id": "evt_009",
@@ -344,8 +356,6 @@
       "descripcion": "Recorrido histórico por el Palacio de la Aljafería, joya del arte islámico.",
       "categoriaId": "cultural",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-14T10:00:00",
       "fin": "2026-01-14T12:00:00",
       "lugar": {
@@ -370,7 +380,11 @@
           "recurso": "https://images.unsplash.com/photo-1568392334889-f6f6c7ed5c2f"
         }
       ],
-      "tags": ["historia", "palacio", "cultura"]
+      "tags": [
+        "historia",
+        "palacio",
+        "cultura"
+      ]
     },
     {
       "id": "evt_010",
@@ -378,8 +392,6 @@
       "descripcion": "Bandas locales de rock en una noche memorable.",
       "categoriaId": "musica",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-15T21:30:00",
       "fin": "2026-01-16T01:00:00",
       "lugar": {
@@ -404,7 +416,11 @@
           "recurso": "https://images.unsplash.com/photo-1429962714451-bb934ecdc4ec"
         }
       ],
-      "tags": ["rock", "musica", "concierto"]
+      "tags": [
+        "rock",
+        "musica",
+        "concierto"
+      ]
     },
     {
       "id": "evt_011",
@@ -412,8 +428,6 @@
       "descripcion": "Espectáculo de magia con los mejores ilusionistas del país.",
       "categoriaId": "infantil",
       "organizadorId": "teatro_principal",
-      "organizadorNombre": "Teatro Principal",
-      "organizadorContacto": "info@teatroprincipalzaragoza.com",
       "inicio": "2026-01-17T18:00:00",
       "fin": "2026-01-17T20:00:00",
       "lugar": {
@@ -438,7 +452,11 @@
           "recurso": "https://images.unsplash.com/photo-1534447677768-be436bb09401"
         }
       ],
-      "tags": ["magia", "familia", "espectaculo"]
+      "tags": [
+        "magia",
+        "familia",
+        "espectaculo"
+      ]
     },
     {
       "id": "evt_012",
@@ -446,8 +464,6 @@
       "descripcion": "Productos artesanales y tradicionales de Aragón.",
       "categoriaId": "tradicional",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-18T10:00:00",
       "fin": "2026-01-18T20:00:00",
       "lugar": {
@@ -472,7 +488,11 @@
           "recurso": "https://images.unsplash.com/photo-1528698827591-e19ccd7bc23d"
         }
       ],
-      "tags": ["artesania", "aragon", "tradicional"]
+      "tags": [
+        "artesania",
+        "aragon",
+        "tradicional"
+      ]
     },
     {
       "id": "evt_013",
@@ -480,8 +500,6 @@
       "descripcion": "Proyección de películas clásicas del cine español en pantalla grande.",
       "categoriaId": "cultural",
       "organizadorId": "caixaforum",
-      "organizadorNombre": "CaixaForum Zaragoza",
-      "organizadorContacto": "info@caixaforum.es",
       "inicio": "2026-01-19T19:00:00",
       "fin": "2026-01-19T21:30:00",
       "lugar": {
@@ -506,7 +524,11 @@
           "recurso": "https://images.unsplash.com/photo-1594908900066-3f47337549d8"
         }
       ],
-      "tags": ["cine", "clasico", "cultura"]
+      "tags": [
+        "cine",
+        "clasico",
+        "cultura"
+      ]
     },
     {
       "id": "evt_014",
@@ -514,8 +536,6 @@
       "descripcion": "Los más pequeños aprenden técnicas de pintura de forma divertida.",
       "categoriaId": "infantil",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-20T17:00:00",
       "fin": "2026-01-20T19:00:00",
       "lugar": {
@@ -540,7 +560,11 @@
           "recurso": "https://images.unsplash.com/photo-1452860606245-08befc0ff44b"
         }
       ],
-      "tags": ["pintura", "niños", "taller"]
+      "tags": [
+        "pintura",
+        "niños",
+        "taller"
+      ]
     },
     {
       "id": "evt_015",
@@ -548,8 +572,6 @@
       "descripcion": "Recital de piano con obras de Chopin y Beethoven.",
       "categoriaId": "musica",
       "organizadorId": "auditorio",
-      "organizadorNombre": "Auditorio de Zaragoza",
-      "organizadorContacto": "info@auditoriozaragoza.com",
       "inicio": "2026-01-21T20:00:00",
       "fin": "2026-01-21T22:00:00",
       "lugar": {
@@ -574,7 +596,11 @@
           "recurso": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d"
         }
       ],
-      "tags": ["clasica", "piano", "concierto"]
+      "tags": [
+        "clasica",
+        "piano",
+        "concierto"
+      ]
     },
     {
       "id": "evt_016",
@@ -582,8 +608,6 @@
       "descripcion": "Descubre los mejores bares y tapas del barrio más emblemático de Zaragoza.",
       "categoriaId": "tradicional",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-22T13:00:00",
       "fin": "2026-01-22T16:00:00",
       "lugar": {
@@ -608,7 +632,11 @@
           "recurso": "https://images.unsplash.com/photo-1550547660-d9450f859349"
         }
       ],
-      "tags": ["gastronomia", "tapas", "tubo"]
+      "tags": [
+        "gastronomia",
+        "tapas",
+        "tubo"
+      ]
     },
     {
       "id": "evt_017",
@@ -616,8 +644,6 @@
       "descripcion": "Noche de comedia con los mejores monologuistas del panorama nacional.",
       "categoriaId": "cultural",
       "organizadorId": "teatro_principal",
-      "organizadorNombre": "Teatro Principal",
-      "organizadorContacto": "info@teatroprincipalzaragoza.com",
       "inicio": "2026-01-23T21:00:00",
       "fin": "2026-01-23T23:00:00",
       "lugar": {
@@ -642,7 +668,11 @@
           "recurso": "https://images.unsplash.com/photo-1527224857830-43a7acc85260"
         }
       ],
-      "tags": ["comedia", "humor", "monologos"]
+      "tags": [
+        "comedia",
+        "humor",
+        "monologos"
+      ]
     },
     {
       "id": "evt_018",
@@ -650,8 +680,6 @@
       "descripcion": "Espectáculo de circo con acróbatas, malabaristas y payasos.",
       "categoriaId": "infantil",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-24T18:00:00",
       "fin": "2026-01-24T20:00:00",
       "lugar": {
@@ -676,7 +704,11 @@
           "recurso": "https://images.unsplash.com/photo-1522057384400-681b421cfebc"
         }
       ],
-      "tags": ["circo", "familia", "espectaculo"]
+      "tags": [
+        "circo",
+        "familia",
+        "espectaculo"
+      ]
     },
     {
       "id": "evt_019",
@@ -684,8 +716,6 @@
       "descripcion": "Noche flamenca con bailaores y cantaores de renombre.",
       "categoriaId": "musica",
       "organizadorId": "teatro_principal",
-      "organizadorNombre": "Teatro Principal",
-      "organizadorContacto": "info@teatroprincipalzaragoza.com",
       "inicio": "2026-01-25T21:00:00",
       "fin": "2026-01-25T23:30:00",
       "lugar": {
@@ -710,7 +740,11 @@
           "recurso": "https://images.unsplash.com/photo-1545224144-b38cd309ef69"
         }
       ],
-      "tags": ["flamenco", "musica", "baile"]
+      "tags": [
+        "flamenco",
+        "musica",
+        "baile"
+      ]
     },
     {
       "id": "evt_020",
@@ -718,8 +752,6 @@
       "descripcion": "Muestra de artistas contemporáneos aragoneses.",
       "categoriaId": "cultural",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-26T10:00:00",
       "fin": "2026-01-26T20:00:00",
       "lugar": {
@@ -744,7 +776,11 @@
           "recurso": "https://images.unsplash.com/photo-1551191916-2a0f455e1f20"
         }
       ],
-      "tags": ["arte", "contemporaneo", "exposicion"]
+      "tags": [
+        "arte",
+        "contemporaneo",
+        "exposicion"
+      ]
     },
     {
       "id": "evt_021",
@@ -752,8 +788,6 @@
       "descripcion": "La Orquesta Sinfónica interpreta grandes clásicos del rock.",
       "categoriaId": "musica",
       "organizadorId": "auditorio",
-      "organizadorNombre": "Auditorio de Zaragoza",
-      "organizadorContacto": "info@auditoriozaragoza.com",
       "inicio": "2026-01-28T20:30:00",
       "fin": "2026-01-28T22:30:00",
       "lugar": {
@@ -778,7 +812,11 @@
           "recurso": "https://images.unsplash.com/photo-1460667262436-cf19894f4774"
         }
       ],
-      "tags": ["rock", "sinfonico", "orquesta"]
+      "tags": [
+        "rock",
+        "sinfonico",
+        "orquesta"
+      ]
     },
     {
       "id": "evt_022",
@@ -786,8 +824,6 @@
       "descripcion": "Mercadillo de objetos antiguos, vintage y coleccionismo.",
       "categoriaId": "tradicional",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-29T10:00:00",
       "fin": "2026-01-29T14:00:00",
       "lugar": {
@@ -812,7 +848,11 @@
           "recurso": "https://images.unsplash.com/photo-1451847251646-8a6c0dd1510c"
         }
       ],
-      "tags": ["mercado", "antiguedades", "vintage"]
+      "tags": [
+        "mercado",
+        "antiguedades",
+        "vintage"
+      ]
     },
     {
       "id": "evt_023",
@@ -820,8 +860,6 @@
       "descripcion": "El exitoso musical con las canciones de ABBA llega a Zaragoza.",
       "categoriaId": "musica",
       "organizadorId": "teatro_principal",
-      "organizadorNombre": "Teatro Principal",
-      "organizadorContacto": "info@teatroprincipalzaragoza.com",
       "inicio": "2026-01-30T20:00:00",
       "fin": "2026-01-30T22:30:00",
       "lugar": {
@@ -846,7 +884,11 @@
           "recurso": "https://images.unsplash.com/photo-1598387993281-cecf8b71a8f8"
         }
       ],
-      "tags": ["musical", "teatro", "abba"]
+      "tags": [
+        "musical",
+        "teatro",
+        "abba"
+      ]
     },
     {
       "id": "evt_024",
@@ -854,8 +896,6 @@
       "descripcion": "Espectáculos de marionetas y títeres para toda la familia.",
       "categoriaId": "infantil",
       "organizadorId": "ayuntamiento",
-      "organizadorNombre": "Ayuntamiento de Zaragoza",
-      "organizadorContacto": "info@zaragoza.es",
       "inicio": "2026-01-31T17:00:00",
       "fin": "2026-01-31T19:00:00",
       "lugar": {
@@ -880,7 +920,11 @@
           "recurso": "https://images.unsplash.com/photo-1516975080664-ed2fc6a32937"
         }
       ],
-      "tags": ["titeres", "niños", "marionetas"]
+      "tags": [
+        "titeres",
+        "niños",
+        "marionetas"
+      ]
     }
   ]
 }
