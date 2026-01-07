@@ -13,7 +13,6 @@ import android.widget.TextView
 import android.widget.VideoView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.google.android.material.appbar.MaterialToolbar
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
 
@@ -38,14 +37,14 @@ class EventDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+        val backButton = view.findViewById<ImageButton>(R.id.back_button)
         val multimediaContainer = view.findViewById<LinearLayout>(R.id.multimedia_container)
         val fullscreenOverlay = view.findViewById<FrameLayout>(R.id.fullscreen_overlay)
         val fullscreenImage = view.findViewById<ImageView>(R.id.fullscreen_image)
         val fullscreenVideo = view.findViewById<VideoView>(R.id.fullscreen_video)
         val btnCloseFullscreen = view.findViewById<ImageButton>(R.id.btn_close_fullscreen)
 
-        toolbar.setNavigationOnClickListener {
+        backButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
