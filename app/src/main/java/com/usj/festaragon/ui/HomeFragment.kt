@@ -96,6 +96,10 @@ class HomeFragment : Fragment() {
                 } else {
                     selectedCategoryId = null
                 }
+                // Trigger filtering when category is selected/deselected
+                filterEvents(showPastEventsSwitch.isChecked) { evento ->
+                    selectedCategoryId == null || evento.getString("categoriaId") == selectedCategoryId
+                }
             }
             categoryButtonsContainer.addView(toggleButton)
         }

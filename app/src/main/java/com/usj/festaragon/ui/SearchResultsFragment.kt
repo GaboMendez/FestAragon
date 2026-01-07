@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
+import android.widget.ImageView
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.ui.adapter.EventsAdapter
@@ -29,10 +29,10 @@ class SearchResultsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+        val backButton = view.findViewById<ImageView>(R.id.back_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.search_results_recycler_view)
 
-        toolbar.setNavigationOnClickListener {
+        backButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
