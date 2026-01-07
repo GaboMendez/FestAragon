@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,8 @@ import java.util.Locale
 
 class EventsAdapter(
     private val events: List<Event>,
-    private val favoritesViewModel: FavoritesViewModel
+    private val favoritesViewModel: FavoritesViewModel,
+    private val onEventClick: (Event) -> Unit
 ) : RecyclerView.Adapter<EventsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,8 +34,12 @@ class EventsAdapter(
 
         val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val outputFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
-        val date = inputFormat.parse(event.date)
-        holder.time.text = "${outputFormat.format(date!!)}, ${event.startTime}"
+        val date = try {
+            inputFormat.parse(event.date)
+        } catch (e: Exception) {
+            null
+        }
+        holder.time.text = if (date != null) "${outputFormat.format(date)}, ${event.startTime}" else event.startTime
 
         holder.location.text = event.location
 
@@ -55,8 +61,10 @@ class EventsAdapter(
         holder.favoriteToggle.setOnClickListener {
             if (holder.favoriteToggle.isChecked) {
                 favoritesViewModel.addFavorite(event)
+                Toast.makeText(holder.itemView.context, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
             } else {
                 favoritesViewModel.removeFavorite(event)
+                Toast.makeText(holder.itemView.context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -70,6 +78,10 @@ class EventsAdapter(
                 .into(holder.image)
         } else {
             holder.image.setImageResource(R.drawable.ic_default_event_image)
+        }
+        
+        holder.itemView.setOnClickListener {
+            onEventClick(event)
         }
     }
 

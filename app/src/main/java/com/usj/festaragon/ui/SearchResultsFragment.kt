@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.ImageView
@@ -31,15 +33,35 @@ class SearchResultsFragment : Fragment() {
 
         val backButton = view.findViewById<ImageView>(R.id.back_button)
         val recyclerView = view.findViewById<RecyclerView>(R.id.search_results_recycler_view)
+        val emptyStateContainer = view.findViewById<View>(R.id.empty_state_container)
 
         backButton.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
 
         val events = arguments?.getParcelableArrayList<Event>("searchResults")?.sortedBy { it.startTime }
-        if (events != null) {
+        
+        if (events.isNullOrEmpty()) {
+            // Show empty state
+            recyclerView.visibility = View.GONE
+            emptyStateContainer.visibility = View.VISIBLE
+        } else {
+            // Show results
+            recyclerView.visibility = View.VISIBLE
+            emptyStateContainer.visibility = View.GONE
             recyclerView.layoutManager = LinearLayoutManager(requireContext())
-            recyclerView.adapter = EventsAdapter(events, favoritesViewModel)
+            recyclerView.adapter = EventsAdapter(events, favoritesViewModel) { event ->
+                navigateToEventDetail(event)
+            }
+        }
+    }
+
+    private fun navigateToEventDetail(event: Event) {
+        parentFragmentManager.commit {
+            replace(R.id.fragment_container, EventDetailFragment().apply {
+                arguments = bundleOf("event" to event)
+            })
+            addToBackStack(null)
         }
     }
 }

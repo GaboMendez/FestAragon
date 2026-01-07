@@ -23,8 +23,10 @@ import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
+import com.usj.festaragon.data.DataRepository
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.ui.adapter.EventsAdapter
+import com.usj.festaragon.model.Multimedia
 import com.usj.festaragon.viewmodel.FavoritesViewModel
 import org.json.JSONArray
 import org.json.JSONObject
@@ -58,12 +60,11 @@ class HomeFragment : Fragment() {
         val todayEventsRecyclerView = view.findViewById<RecyclerView>(R.id.today_events_recycler_view)
         showPastEventsSwitch = view.findViewById(R.id.show_past_events_switch)
 
-        val jsonString = requireContext().assets.open("data-pueblo.json").bufferedReader().use { it.readText() }
-        val jsonObject = JSONObject(jsonString)
-        eventosArray = jsonObject.getJSONArray("eventos")
+        // Get data from repository
+        eventosArray = DataRepository.getEventosArray() ?: JSONArray()
 
         // Category buttons
-        val categoriasArray = jsonObject.getJSONArray("categorias")
+        val categoriasArray = DataRepository.getCategoriasArray() ?: JSONArray()
         for (i in 0 until categoriasArray.length()) {
             val categoria = categoriasArray.getJSONObject(i)
             val categoriaNombre = categoria.getString("nombre")
@@ -138,7 +139,9 @@ class HomeFragment : Fragment() {
             }
         }
         todayEventsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        todayEventsRecyclerView.adapter = EventsAdapter(todayEvents, favoritesViewModel)
+        todayEventsRecyclerView.adapter = EventsAdapter(todayEvents, favoritesViewModel) { event ->
+            navigateToEventDetail(event)
+        }
 
         searchButton.setOnClickListener {
             val searchTerm = searchEditText.text.toString()
@@ -197,17 +200,59 @@ class HomeFragment : Fragment() {
     }
 
     private fun createEventFromJsonObject(jsonObject: JSONObject): Event {
-        val multimedia = jsonObject.optJSONObject("multimedia")
-        val imageUrl = multimedia?.optString("recurso", "") ?: ""
+        // Parse multimedia array
+        val multimediaArray = jsonObject.optJSONArray("multimedia") ?: JSONArray()
+        val multimediaList = mutableListOf<Multimedia>()
         
+        for (i in 0 until multimediaArray.length()) {
+            val mediaObj = multimediaArray.getJSONObject(i)
+            multimediaList.add(Multimedia(
+                type = mediaObj.getString("tipo"),
+                resource = mediaObj.getString("recurso")
+            ))
+        }
+        
+        // Get first image from array as the main imageUrl
+        val imageUrl = multimediaList.firstOrNull { it.type == "imagen" }?.resource ?: ""
+        val imageName = imageUrl.substringBeforeLast(".").takeIf { it.isNotEmpty() }
+
+        // Get category name from repository
+        val categoryId = jsonObject.getString("categoriaId")
+        val categoryName = DataRepository.getCategories().find { it.id == categoryId }?.name ?: categoryId
+        
+        // Get organizer info from repository
+        val organizadorId = jsonObject.getString("organizadorId")
+        val organizer = DataRepository.getOrganizadoresArray()?.let { array ->
+            (0 until array.length()).map { array.getJSONObject(it) }
+                .find { it.getString("id") == organizadorId }
+        }
+        val organizerName = organizer?.getString("nombre") ?: ""
+        val organizerContact = organizer?.getString("contacto") ?: ""
+        
+        // Parse location with default values
+        val lugar = jsonObject.optJSONObject("lugar")
+        val locationName = lugar?.optString("nombre", "") ?: ""
+        val coordenadas = lugar?.optJSONObject("coordenadas")
+        val lat = coordenadas?.optDouble("lat", 0.0) ?: 0.0
+        val lng = coordenadas?.optDouble("lng", 0.0) ?: 0.0
+
         return Event(
             id = jsonObject.getString("id"),
             title = jsonObject.getString("titulo"),
             date = jsonObject.getString("inicio").substring(0, 10),
             startTime = jsonObject.getString("inicio").substring(11, 16),
             endTime = jsonObject.getString("fin").substring(11, 16),
-            location = jsonObject.getJSONObject("lugar").getString("nombre"),
-            imageUrl = imageUrl
+            location = locationName,
+            description = jsonObject.optString("descripcion", ""),
+            imageUrl = imageUrl,
+            imageName = imageName,
+            multimedia = multimediaList,
+            categoryId = categoryId,
+            categoryName = categoryName,
+            organizerName = organizerName,
+            organizerContact = organizerContact,
+            latitude = lat,
+            longitude = lng
         )
     }
 
@@ -220,6 +265,15 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun navigateToEventDetail(event: Event) {
+        parentFragmentManager.commit {
+            replace(R.id.fragment_container, EventDetailFragment().apply {
+                arguments = bundleOf("event" to event)
+            })
+            addToBackStack(null)
+        }
+    }
+
     // Extension function to iterate over JSONArray
     fun JSONArray.forEach(action: (JSONObject) -> Unit) {
         for (i in 0 until this.length()) {
@@ -227,4 +281,3 @@ class HomeFragment : Fragment() {
         }
     }
 }
-
