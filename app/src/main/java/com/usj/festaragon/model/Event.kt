@@ -17,7 +17,7 @@ data class Event(
     val startTime: String,
     val endTime: String,
     val location: String,
-    val description: String? = null,
+    val description: String = "",
     val imageName: String? = null,
     val multimedia: List<Multimedia> = emptyList(),
     val categoryId: String = "",

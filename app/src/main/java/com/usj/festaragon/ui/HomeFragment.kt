@@ -250,4 +250,20 @@ class HomeFragment : Fragment() {
             addToBackStack(null)
         }
     }
+
+    private fun navigateToEventDetail(event: Event) {
+        parentFragmentManager.commit {
+            replace(R.id.fragment_container, EventDetailFragment().apply {
+                arguments = bundleOf("event" to event)
+            })
+            addToBackStack(null)
+        }
+    }
+
+    // Extension function to iterate over JSONArray
+    fun JSONArray.forEach(action: (JSONObject) -> Unit) {
+        for (i in 0 until this.length()) {
+            action(this.getJSONObject(i))
+        }
+    }
 }

@@ -11,11 +11,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
+import com.usj.festaragon.model.Event
 import com.usj.festaragon.ui.adapter.EventsAdapter
 import com.usj.festaragon.viewmodel.FavoritesViewModel
 
@@ -51,7 +54,9 @@ class FavoritesFragment : Fragment() {
         }
 
         favoritesViewModel.favoriteEvents.observe(viewLifecycleOwner) { events ->
-            recyclerView.adapter = EventsAdapter(events, favoritesViewModel)
+            recyclerView.adapter = EventsAdapter(events, favoritesViewModel) { event ->
+                navigateToEventDetail(event)
+            }
         }
 
         notificationsSwitch.setOnClickListener {
@@ -71,6 +76,15 @@ class FavoritesFragment : Fragment() {
             } else {
                 favoritesViewModel.setNotificationsEnabled(false)
             }
+        }
+    }
+
+    private fun navigateToEventDetail(event: Event) {
+        parentFragmentManager.commit {
+            replace(R.id.fragment_container, EventDetailFragment().apply {
+                arguments = bundleOf("event" to event)
+            })
+            addToBackStack(null)
         }
     }
 }
