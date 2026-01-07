@@ -15,5 +15,6 @@ data class Event(
     val categoryId: String = "",
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,
+    val imageUrl: String = "",
     var isFavorite: Boolean = false
 ) : Parcelable

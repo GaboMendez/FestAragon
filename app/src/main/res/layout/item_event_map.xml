@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:padding="12dp">
 
-        <!-- Event Image Placeholder -->
+        <!-- Event Image -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/image_container"
             android:layout_width="64dp"
@@ -27,13 +27,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <TextView
+            <ImageView
+                android:id="@+id/event_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Imagen"
-                android:textColor="#9E9E9E"
-                android:textSize="10sp" />
+                android:scaleType="centerCrop"
+                android:contentDescription="Event image"
+                tools:src="@tools:sample/backgrounds/scenic" />
 
         </com.google.android.material.card.MaterialCardView>
 

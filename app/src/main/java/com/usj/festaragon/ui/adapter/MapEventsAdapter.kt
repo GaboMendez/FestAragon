@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.viewmodel.FavoritesViewModel
@@ -38,6 +40,7 @@ class MapEventsAdapter(
     override fun getItemCount() = events.size
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val image: ImageView = view.findViewById(R.id.event_image)
         private val title: TextView = view.findViewById(R.id.event_title)
         private val location: TextView = view.findViewById(R.id.event_location)
         private val time: TextView = view.findViewById(R.id.event_time)
@@ -55,6 +58,18 @@ class MapEventsAdapter(
             }
 
             time.text = "${event.startTime} - ${event.endTime}"
+
+            // Load event image
+            if (event.imageUrl.isNotEmpty()) {
+                Glide.with(itemView.context)
+                    .load(event.imageUrl)
+                    .placeholder(R.drawable.ic_default_event_image)
+                    .error(R.drawable.ic_default_event_image)
+                    .centerCrop()
+                    .into(image)
+            } else {
+                image.setImageResource(R.drawable.ic_default_event_image)
+            }
 
             // Set up favorite toggle with star drawable
             val stateListDrawable = StateListDrawable()

@@ -72,6 +72,8 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
                 val evento = eventosArray.getJSONObject(i)
                 val lugar = evento.getJSONObject("lugar")
                 val coordenadas = lugar.getJSONObject("coordenadas")
+                val multimedia = evento.optJSONObject("multimedia")
+                val imageUrl = multimedia?.optString("recurso", "") ?: ""
 
                 eventList.add(
                     Event(
@@ -84,7 +86,8 @@ class MapsViewModel(application: Application) : AndroidViewModel(application) {
                         location = lugar.getString("nombre"),
                         categoryId = evento.getString("categoriaId"),
                         latitude = coordenadas.getDouble("lat"),
-                        longitude = coordenadas.getDouble("lng")
+                        longitude = coordenadas.getDouble("lng"),
+                        imageUrl = imageUrl
                     )
                 )
             }

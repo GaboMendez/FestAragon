@@ -9,6 +9,7 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.viewmodel.FavoritesViewModel
@@ -59,8 +60,17 @@ class EventsAdapter(
             }
         }
 
-        // Placeholder image
-        holder.image.setImageResource(R.drawable.ic_launcher_background)
+        // Load image from URL using Glide
+        if (event.imageUrl.isNotEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(event.imageUrl)
+                .placeholder(R.drawable.ic_default_event_image)
+                .error(R.drawable.ic_default_event_image)
+                .centerCrop()
+                .into(holder.image)
+        } else {
+            holder.image.setImageResource(R.drawable.ic_default_event_image)
+        }
     }
 
     override fun getItemCount() = events.size

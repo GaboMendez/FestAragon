@@ -193,13 +193,17 @@ class HomeFragment : Fragment() {
     }
 
     private fun createEventFromJsonObject(jsonObject: JSONObject): Event {
+        val multimedia = jsonObject.optJSONObject("multimedia")
+        val imageUrl = multimedia?.optString("recurso", "") ?: ""
+        
         return Event(
             id = jsonObject.getString("id"),
             title = jsonObject.getString("titulo"),
             date = jsonObject.getString("inicio").substring(0, 10),
             startTime = jsonObject.getString("inicio").substring(11, 16),
             endTime = jsonObject.getString("fin").substring(11, 16),
-            location = jsonObject.getJSONObject("lugar").getString("nombre")
+            location = jsonObject.getJSONObject("lugar").getString("nombre"),
+            imageUrl = imageUrl
         )
     }
 
