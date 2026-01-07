@@ -15,12 +15,12 @@ import android.widget.GridLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ToggleButton
-import androidx.appcompat.widget.SwitchCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
 import com.usj.festaragon.data.DataRepository
@@ -39,7 +39,6 @@ class HomeFragment : Fragment() {
     private val favoritesViewModel: FavoritesViewModel by activityViewModels()
     private lateinit var eventosArray: JSONArray
     private val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    private lateinit var showPastEventsSwitch: SwitchCompat
     private val categoryToggleButtons = mutableListOf<ToggleButton>()
     private var selectedCategoryId: String? = null
 
@@ -58,7 +57,7 @@ class HomeFragment : Fragment() {
         val categoryButtonsContainer = view.findViewById<GridLayout>(R.id.category_buttons_container)
         val dayFilterContainer = view.findViewById<LinearLayout>(R.id.day_filter_container)
         val todayEventsRecyclerView = view.findViewById<RecyclerView>(R.id.today_events_recycler_view)
-        showPastEventsSwitch = view.findViewById(R.id.show_past_events_switch)
+        val showPastEventsSwitch = view.findViewById<SwitchMaterial>(R.id.show_past_events_switch)
 
         // Get data from repository
         eventosArray = DataRepository.getEventosArray() ?: JSONArray()
@@ -106,10 +105,7 @@ class HomeFragment : Fragment() {
         }
 
         // Day filter buttons (logic remains the same, triggers search)
-        val firstEventDateString = eventosArray.getJSONObject(0).getString("inicio")
-        val parser = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
-        val calendar = Calendar.getInstance()
-        calendar.time = parser.parse(firstEventDateString)!!
+        val calendar = Calendar.getInstance() // Use current date
         val dayFormat = SimpleDateFormat("dd", Locale.getDefault())
         for (i in 0..4) {
             val button = Button(requireContext()).apply{
@@ -132,7 +128,7 @@ class HomeFragment : Fragment() {
 
         // Today's Events
         val todayEvents = mutableListOf<Event>()
-        val todayString = sdf.format(parser.parse(firstEventDateString)!!)
+        val todayString = sdf.format(Calendar.getInstance().time) // Use current date
         eventosArray.forEach { evento ->
             if (evento.getString("inicio").substring(0, 10) == todayString) {
                 todayEvents.add(createEventFromJsonObject(evento))
@@ -184,14 +180,18 @@ class HomeFragment : Fragment() {
 
     private fun filterEvents(showPast: Boolean, filter: (JSONObject) -> Boolean) {
         val results = mutableListOf<Event>()
-        val testDateCalendar = Calendar.getInstance().apply {
-            set(2025, Calendar.AUGUST, 10)
-        }
+        val currentDate = Calendar.getInstance().apply {
+            // Reset time to midnight for accurate date comparison
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
 
         eventosArray.forEach { evento ->
             val eventDate = sdf.parse(evento.getString("inicio").substring(0, 10))
             if (filter(evento)) {
-                if (showPast || !eventDate.before(testDateCalendar.time)) {
+                if (showPast || !eventDate.before(currentDate)) {
                     results.add(createEventFromJsonObject(evento))
                 }
             }

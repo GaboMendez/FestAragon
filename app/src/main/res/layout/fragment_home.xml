@@ -36,12 +36,10 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
-        <androidx.appcompat.widget.SwitchCompat
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/show_past_events_switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:thumbTint="@color/fest_burgundy"
-            app:trackTint="@color/fest_golden_light" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

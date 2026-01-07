@@ -194,10 +194,6 @@ class ProfileFragment : Fragment() {
             showNoticeTimeDialog()
         }
 
-        view.findViewById<View>(R.id.logout_button).setOnClickListener {
-            showLogoutConfirmationDialog()
-        }
-        
         updatePermissionStates()
     }
 
@@ -341,17 +337,6 @@ class ProfileFragment : Fragment() {
             }
         }
         builder.show()
-    }
-
-    private fun showLogoutConfirmationDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Cerrar sesión")
-            .setMessage("¿Estás seguro de que deseas cerrar sesión?")
-            .setPositiveButton("Sí") { _, _ ->
-                // Handle logout
-            }
-            .setNegativeButton("No", null)
-            .show()
     }
 
     private fun saveImageToInternalStorage(uri: Uri): String? {
