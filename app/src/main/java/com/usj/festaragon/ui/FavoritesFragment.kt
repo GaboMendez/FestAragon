@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
+import com.usj.festaragon.ui.adapter.EventsAdapter
 import com.usj.festaragon.viewmodel.FavoritesViewModel
 
 class FavoritesFragment : Fragment() {

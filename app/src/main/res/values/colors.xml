@@ -2,4 +2,21 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Category Colors -->
+    <color name="category_music">#9C27B0</color>
+    <color name="category_cultural">#2196F3</color>
+    <color name="category_infantil">#4CAF50</color>
+    <color name="category_tradicional">#FF9800</color>
+    
+    <!-- Primary Colors -->
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#1565C0</color>
+    <color name="accent">#FF5722</color>
+    
+    <!-- UI Colors -->
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="background">#FAFAFA</color>
 </resources>

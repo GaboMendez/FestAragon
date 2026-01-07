@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
+import com.usj.festaragon.ui.adapter.EventsAdapter
 import com.usj.festaragon.viewmodel.FavoritesViewModel
 
 class SearchResultsFragment : Fragment() {

@@ -1,4 +1,4 @@
-package com.usj.festaragon.ui
+package com.usj.festaragon.ui.adapter
 
 import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
