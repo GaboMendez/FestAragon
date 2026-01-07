@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
@@ -119,7 +120,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
         toggleViewButton.setOnClickListener {
             isListView = !isListView
-            toggleViewButton.text = if (isListView) "Vista lista" else "Leyenda"
+            toggleViewButton.text = if (isListView) "Ver Leyenda" else "Ver Lista"
             legendContainer.visibility = if (isListView) View.GONE else View.VISIBLE
             eventsRecyclerView.visibility = if (isListView) View.VISIBLE else View.GONE
         }
@@ -158,9 +159,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                     chipIcon = ContextCompat.getDrawable(context, iconRes)
                     isChipIconVisible = true
 
-                    setOnCheckedChangeListener { _, _ ->
-                        mapsViewModel.toggleCategoryFilter(category.id)
-                    }
                 }
                 categoryChipGroup.addView(chip)
             }
@@ -189,6 +187,46 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
         view.findViewById<FloatingActionButton>(R.id.fab_layers).setOnClickListener {
             toggleMapType()
         }
+
+        view.findViewById<FloatingActionButton>(R.id.fab_filter).setOnClickListener {
+            showFilterDialog()
+        }
+    }
+
+    private fun showFilterDialog() {
+        val categories = mapsViewModel.categories.value ?: return
+        val categoryNames = categories.map { it.name }.toTypedArray()
+        val selectedCategories = mapsViewModel.selectedCategories.value ?: mutableSetOf()
+        val checkedItems = categories.map { it.id in selectedCategories }.toBooleanArray()
+        
+        // Track temporary selections in the dialog - start fresh with current state
+        val tempSelectedCategories = mutableSetOf<String>()
+        tempSelectedCategories.addAll(selectedCategories)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Filtrar por categoría")
+            .setMultiChoiceItems(categoryNames, checkedItems) { _, which, isChecked ->
+                val categoryId = categories[which].id
+                if (isChecked) {
+                    tempSelectedCategories.add(categoryId)
+                } else {
+                    tempSelectedCategories.remove(categoryId)
+                }
+            }
+            .setPositiveButton("Aplicar") { _, _ ->
+                // Clear current filters first
+                mapsViewModel.clearFilters()
+
+                // Apply only the newly selected filters
+                tempSelectedCategories.forEach { categoryId ->
+                    mapsViewModel.toggleCategoryFilter(categoryId)
+                }
+            }
+            .setNeutralButton("Limpiar filtros") { _, _ ->
+                // Clear all category filters
+                mapsViewModel.clearFilters()
+            }
+            .show()
     }
 
     private fun toggleMapType() {

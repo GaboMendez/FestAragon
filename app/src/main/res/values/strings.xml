@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">FestAragon</string>
+    <string name="app_name">FestAragón</string>
+    <string name="app_tagline">Descubre las fiestas de Aragón</string>
+    
+    <!-- Navigation -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_maps">Mapa</string>
+    <string name="nav_favorites">Favoritos</string>
+    <string name="nav_profile">Perfil</string>
+    
+    <!-- Splash -->
+    <string name="splash_loading">Cargando...</string>
 </resources>

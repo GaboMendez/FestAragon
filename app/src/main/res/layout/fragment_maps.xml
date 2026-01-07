@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".ui.MapsFragment">
 
     <!-- Main Content -->
@@ -17,56 +18,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:background="@color/primary"
             android:elevation="4dp"
             app:titleCentered="true"
+            app:titleTextColor="@color/white"
             app:title="Mapa de Eventos" />
-
-        <!-- Search Bar -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="8dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="4dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_menu_search"
-                    app:tint="#9E9E9E" />
-
-                <EditText
-                    android:id="@+id/search_edit_text"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="Buscar ubicación..."
-                    android:inputType="text"
-                    android:textSize="14sp" />
-
-                <ImageButton
-                    android:id="@+id/my_location_button"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Mi ubicación"
-                    android:src="@android:drawable/ic_menu_mylocation"
-                    android:tint="#1976D2" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
 
         <!-- Map Container -->
         <FrameLayout
@@ -85,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|top"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="80dp"
                 android:layout_marginEnd="8dp"
                 android:orientation="vertical">
 
@@ -95,19 +51,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:contentDescription="Capas"
-                    android:src="@android:drawable/ic_menu_sort_by_size"
+                    android:src="@android:drawable/ic_menu_view"
                     android:tint="#616161"
                     app:backgroundTint="@color/white"
                     app:fabCustomSize="40dp"
-                    app:maxImageSize="20dp" />
+                    app:maxImageSize="30dp" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fab_filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="Filtros"
-                    android:src="@android:drawable/ic_menu_sort_alphabetically"
-                    android:tint="#616161"
+                    app:srcCompat="@drawable/ic_filter"
                     app:backgroundTint="@color/white"
                     app:fabCustomSize="40dp"
                     app:maxImageSize="20dp" />
@@ -131,7 +86,7 @@
                     app:backgroundTint="@color/white"
                     app:fabCustomSize="36dp"
                     app:maxImageSize="16dp"
-                    app:srcCompat="@android:drawable/ic_input_add" />
+                    app:srcCompat="@drawable/ic_zoom_in" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fab_zoom_out"
@@ -141,7 +96,7 @@
                     app:backgroundTint="@color/white"
                     app:fabCustomSize="36dp"
                     app:maxImageSize="16dp"
-                    app:srcCompat="@android:drawable/btn_minus" />
+                    app:srcCompat="@drawable/ic_zoom_out" />
 
             </LinearLayout>
 
@@ -200,6 +155,53 @@
 
     </LinearLayout>
 
+    <!-- Floating Search Bar -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="84dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:tint="#9E9E9E" />
+
+            <EditText
+                android:id="@+id/search_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Buscar ubicación..."
+                android:inputType="text"
+                android:textSize="14sp" />
+
+            <ImageButton
+                android:id="@+id/my_location_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Mi ubicación"
+                android:src="@android:drawable/ic_menu_mylocation"
+                app:tint="#1976D2" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
     <!-- Bottom Sheet for Nearby Events -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -237,7 +239,7 @@
                     android:layout_weight="1"
                     android:text="Eventos Cercanos"
                     android:textColor="#212121"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -245,12 +247,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:drawableEnd="@android:drawable/ic_menu_sort_by_size"
-                    android:drawablePadding="4dp"
                     android:focusable="true"
-                    android:text="Vista lista"
-                    android:textColor="#757575"
-                    android:textSize="12sp" />
+                    android:text="Ver Leyenda"
+                    android:textColor="#1976D2"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:padding="8dp"
+                    android:background="?attr/selectableItemBackground" />
 
             </LinearLayout>
 
@@ -279,7 +282,7 @@
                     android:layout_marginBottom="8dp"
                     android:text="Leyenda del Mapa"
                     android:textColor="#212121"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <LinearLayout
@@ -293,13 +296,13 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingVertical="4dp">
+                        android:paddingVertical="6dp">
 
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_music_marker"
-                            android:tint="@color/category_music" />
+                            app:tint="@color/category_music" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -307,7 +310,7 @@
                             android:layout_marginStart="8dp"
                             android:text="Conciertos y Música"
                             android:textColor="#616161"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -315,13 +318,13 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingVertical="4dp">
+                        android:paddingVertical="6dp">
 
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_culture_marker"
-                            android:tint="@color/category_cultural" />
+                            app:tint="@color/category_cultural" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -329,7 +332,7 @@
                             android:layout_marginStart="8dp"
                             android:text="Eventos Culturales"
                             android:textColor="#616161"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -337,13 +340,13 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingVertical="4dp">
+                        android:paddingVertical="6dp">
 
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_children_marker"
-                            android:tint="@color/category_infantil" />
+                            app:tint="@color/category_infantil" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -351,7 +354,7 @@
                             android:layout_marginStart="8dp"
                             android:text="Actividades Infantiles"
                             android:textColor="#616161"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -359,13 +362,13 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingVertical="4dp">
+                        android:paddingVertical="6dp">
 
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:src="@drawable/ic_traditional_marker"
-                            android:tint="@color/category_tradicional" />
+                            app:tint="@color/category_tradicional" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -373,7 +376,7 @@
                             android:layout_marginStart="8dp"
                             android:text="Eventos Tradicionales"
                             android:textColor="#616161"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
                     </LinearLayout>
 
                 </LinearLayout>

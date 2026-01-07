@@ -62,9 +62,9 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
             android:src="@android:drawable/ic_menu_mylocation"
-            android:tint="#757575"
             app:layout_constraintStart_toEndOf="@+id/image_container"
-            app:layout_constraintTop_toBottomOf="@+id/event_title" />
+            app:layout_constraintTop_toBottomOf="@+id/event_title"
+            app:tint="#757575" />
 
         <TextView
             android:id="@+id/event_location"
@@ -90,9 +90,9 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
             android:src="@android:drawable/ic_menu_recent_history"
-            android:tint="#757575"
             app:layout_constraintStart_toEndOf="@+id/image_container"
-            app:layout_constraintTop_toBottomOf="@+id/icon_location" />
+            app:layout_constraintTop_toBottomOf="@+id/icon_location"
+            app:tint="#757575" />
 
         <TextView
             android:id="@+id/event_time"
@@ -109,28 +109,27 @@
             tools:text="19:00 - 21:00" />
 
         <!-- Favorite Button -->
-        <ImageButton
+        <ToggleButton
             android:id="@+id/favorite_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:textOff=""
+            android:textOn=""
             android:contentDescription="Añadir a favoritos"
-            android:src="@drawable/ic_favorite"
-            android:tint="#BDBDBD"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Directions Button -->
         <ImageButton
             android:id="@+id/directions_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Obtener direcciones"
             android:src="@android:drawable/ic_menu_directions"
-            android:tint="#1976D2"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="#1976D2" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

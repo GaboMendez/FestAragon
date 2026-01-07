@@ -5,14 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/background"
     tools:context=".ui.FavoritesFragment">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
         android:elevation="4dp"
         app:titleCentered="true"
+        app:titleTextColor="@color/white"
         app:title="Favoritos" />
 
     <LinearLayout
@@ -27,12 +30,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Notificaciones"
+            android:textColor="@color/text_primary"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/notifications_switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            app:thumbTint="@color/fest_burgundy"
+            app:trackTint="@color/fest_golden_light"/>
 
     </LinearLayout>
 

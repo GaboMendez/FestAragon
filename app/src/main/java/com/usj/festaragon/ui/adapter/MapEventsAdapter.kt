@@ -1,10 +1,12 @@
 package com.usj.festaragon.ui.adapter
 
+import android.graphics.drawable.StateListDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.usj.festaragon.R
@@ -39,7 +41,7 @@ class MapEventsAdapter(
         private val title: TextView = view.findViewById(R.id.event_title)
         private val location: TextView = view.findViewById(R.id.event_location)
         private val time: TextView = view.findViewById(R.id.event_time)
-        private val favoriteButton: ImageButton = view.findViewById(R.id.favorite_button)
+        private val favoriteButton: ToggleButton = view.findViewById(R.id.favorite_button)
         private val directionsButton: ImageButton = view.findViewById(R.id.directions_button)
 
         fun bind(event: Event) {
@@ -54,22 +56,27 @@ class MapEventsAdapter(
 
             time.text = "${event.startTime} - ${event.endTime}"
 
-            // Update favorite state
-            val isFavorite = favoritesViewModel.isFavorite(event)
-            favoriteButton.setColorFilter(
-                ContextCompat.getColor(
-                    itemView.context,
-                    if (isFavorite) android.R.color.holo_red_light else android.R.color.darker_gray
-                )
+            // Set up favorite toggle with star drawable
+            val stateListDrawable = StateListDrawable()
+            stateListDrawable.addState(
+                intArrayOf(android.R.attr.state_checked),
+                ContextCompat.getDrawable(itemView.context, android.R.drawable.btn_star_big_on)
             )
+            stateListDrawable.addState(
+                intArrayOf(),
+                ContextCompat.getDrawable(itemView.context, android.R.drawable.btn_star_big_off)
+            )
+            favoriteButton.background = stateListDrawable
+
+            // Update favorite state
+            favoriteButton.isChecked = favoritesViewModel.isFavorite(event)
 
             favoriteButton.setOnClickListener {
-                if (favoritesViewModel.isFavorite(event)) {
-                    favoritesViewModel.removeFavorite(event)
-                } else {
+                if (favoriteButton.isChecked) {
                     favoritesViewModel.addFavorite(event)
+                } else {
+                    favoritesViewModel.removeFavorite(event)
                 }
-                notifyItemChanged(adapterPosition)
             }
 
             directionsButton.setOnClickListener {
