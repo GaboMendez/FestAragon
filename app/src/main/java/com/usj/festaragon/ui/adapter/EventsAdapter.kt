@@ -15,6 +15,7 @@ import com.usj.festaragon.R
 import com.usj.festaragon.model.Event
 import com.usj.festaragon.viewmodel.FavoritesViewModel
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 class EventsAdapter(
@@ -43,6 +44,25 @@ class EventsAdapter(
 
         holder.location.text = event.location
 
+        // Check if event is in the past
+        val currentDate = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+        
+        val isPastEvent = date != null && date.before(currentDate)
+        
+        // Apply visual difference for past events
+        if (isPastEvent) {
+            holder.itemView.alpha = 0.6f
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.context, android.R.color.darker_gray))
+        } else {
+            holder.itemView.alpha = 1.0f
+            holder.title.setTextColor(ContextCompat.getColor(holder.itemView.context, android.R.color.black))
+        }
+
         // Programmatically create and set the selector for the favorite toggle
         val context = holder.itemView.context
         val stateListDrawable = StateListDrawable()
@@ -58,13 +78,22 @@ class EventsAdapter(
 
         holder.favoriteToggle.isChecked = favoritesViewModel.isFavorite(event)
 
-        holder.favoriteToggle.setOnClickListener {
-            if (holder.favoriteToggle.isChecked) {
-                favoritesViewModel.addFavorite(event)
-                Toast.makeText(holder.itemView.context, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
-            } else {
-                favoritesViewModel.removeFavorite(event)
-                Toast.makeText(holder.itemView.context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
+        // Disable favorite toggle for past events
+        if (isPastEvent) {
+            holder.favoriteToggle.isEnabled = false
+            holder.favoriteToggle.alpha = 0.5f
+            holder.favoriteToggle.setOnClickListener(null)
+        } else {
+            holder.favoriteToggle.isEnabled = true
+            holder.favoriteToggle.alpha = 1.0f
+            holder.favoriteToggle.setOnClickListener {
+                if (holder.favoriteToggle.isChecked) {
+                    favoritesViewModel.addFavorite(event)
+                    Toast.makeText(holder.itemView.context, "Añadido a favoritos", Toast.LENGTH_SHORT).show()
+                } else {
+                    favoritesViewModel.removeFavorite(event)
+                    Toast.makeText(holder.itemView.context, "Eliminado de favoritos", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
@@ -80,8 +109,15 @@ class EventsAdapter(
             holder.image.setImageResource(R.drawable.ic_default_event_image)
         }
         
-        holder.itemView.setOnClickListener {
-            onEventClick(event)
+        // Disable click for past events
+        if (isPastEvent) {
+            holder.itemView.setOnClickListener(null)
+            holder.itemView.isClickable = false
+        } else {
+            holder.itemView.isClickable = true
+            holder.itemView.setOnClickListener {
+                onEventClick(event)
+            }
         }
     }
 

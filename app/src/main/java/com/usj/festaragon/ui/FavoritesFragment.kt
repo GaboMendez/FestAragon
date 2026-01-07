@@ -46,6 +46,7 @@ class FavoritesFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.favorites_recycler_view)
         val notificationsSwitch = view.findViewById<SwitchCompat>(R.id.notifications_switch)
+        val emptyStateContainer = view.findViewById<View>(R.id.empty_state_container)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         // Observe the unified state
@@ -56,6 +57,15 @@ class FavoritesFragment : Fragment() {
         favoritesViewModel.favoriteEvents.observe(viewLifecycleOwner) { events ->
             recyclerView.adapter = EventsAdapter(events, favoritesViewModel) { event ->
                 navigateToEventDetail(event)
+            }
+            
+            // Show empty state when there are no favorites
+            if (events.isEmpty()) {
+                emptyStateContainer.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            } else {
+                emptyStateContainer.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
             }
         }
 
